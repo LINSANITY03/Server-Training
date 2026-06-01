@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+@import "tailwindcss";
+
+:root {
+  --bg: #0f1117;
+  --surface: #181c27;
+  --surface2: #1e2334;
+  --surface3: #252a3d;
+  
+  --amber: #d4943a;
+  --amber-light: #f0b854;
+  --amber-dim: rgba(212, 148, 58, 0.12);
+  
+  --text: #e8e2d5;
+  --text-muted: rgba(232, 226, 213, 0.5);
+  --text-dim: rgba(232, 226, 213, 0.3);
+  
+  --border: rgba(255, 255, 255, 0.07);
+  --border-hover: rgba(255, 255, 255, 0.14);
+  
+  --green: #4ade80;
+  --yellow: #f59e0b;
+  --red: #f87171;
+  
+  --radius: 10px;
+  --radius-lg: 14px;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+}
+
+h1, h2, h3, .font-serif {
+  font-family: 'Playfair Display', serif;
+}
+
+/* Custom Scrollbar for UX */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { 
+  background: var(--surface3); 
+  border-radius: 3px; 
+}
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
