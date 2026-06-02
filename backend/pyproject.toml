@@ -10,4 +10,6 @@ dependencies = [
     "django-filter>=25.2",
     "djangorestframework>=3.17.1",
     "markdown>=3.10.2",
+    "psycopg2>=2.9.12",
+    "python-dotenv>=1.2.2",
 ]

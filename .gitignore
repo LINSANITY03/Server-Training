@@ -1,2 +1,8 @@
 # os
 .DS_STORE
+
+# env
+.env*
+
+# database
+db.sqlite3
