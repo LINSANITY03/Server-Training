@@ -81,7 +81,6 @@ WSGI_APPLICATION = "servox.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-print("POSTGRESQL_DB_NAME", os.getenv("POSTGRESQL_DB_NAME"))
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',

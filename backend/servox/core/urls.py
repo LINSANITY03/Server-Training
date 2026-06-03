@@ -4,9 +4,6 @@ from rest_framework import routers
 from core.views import DiningViewSet
 
 router = routers.DefaultRouter()
-router.register(r'', DiningViewSet)
+router.register(r"", DiningViewSet, basename="diningtype")
 
-urlpatterns = [
-    path("", include(router.urls), name="DiningType")
-]
-
+urlpatterns = [path("", include(router.urls))]
