@@ -1,13 +1,28 @@
 [project]
 name = "backend"
 version = "0.1.0"
-description = "Add your description here"
+description = "AI powered custom server training platform"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "black>=26.5.1",
     "django>=5.2.14",
-    "django-filter>=25.2",
     "djangorestframework>=3.17.1",
+    "django-filter>=25.2",
     "markdown>=3.10.2",
+    "psycopg2>=2.9.12",
+    "python-dotenv>=1.2.2",
 ]
+
+[dependency-groups]
+dev = [
+    "black>=26.5.1",
+    "pytest>=9.0.3",
+    "pytest-django>=4.12.0",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.15.15",
+]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "servox.settings"
+python_files = ["test_*.py", "*_test.py", "tests.py"]
+addopts = "--reuse-db --strict-markers"

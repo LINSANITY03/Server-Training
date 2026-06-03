@@ -1,2 +1,14 @@
 # os
 .DS_STORE
+
+# env
+.env*
+.venv*
+
+# database
+db.sqlite3
+
+# cache
+__pycache__*
+.ruff_cache*
+

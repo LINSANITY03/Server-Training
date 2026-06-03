@@ -1,3 +1,9 @@
-from django.shortcuts import render
+from rest_framework import viewsets
 
-# Create your views here.
+from core.serializer import DiningSerializer
+from core.models import DiningType
+
+
+class DiningViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = DiningType.objects.all()
+    serializer_class = DiningSerializer
