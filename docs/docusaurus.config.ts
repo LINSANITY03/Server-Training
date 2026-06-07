@@ -19,7 +19,7 @@ const config: Config = {
   url: 'https://LINSANITY03.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/servox-docs/',
+  baseUrl: '/Server-Training/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
