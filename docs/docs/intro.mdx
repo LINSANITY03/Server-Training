@@ -1,0 +1,75 @@
+---
+sidebar_position: 1
+title: Introduction
+---
+
+# ServoX API
+
+Build, manage, and integrate with the ServoX platform through a modern REST API.
+
+The ServoX API provides endpoints for authentication, resource management, and platform integrations. Whether you're building a frontend application, internal tooling, or third-party integrations, this documentation will help you get up and running quickly.
+
+---
+
+## Quick Start
+
+Get a local development environment running in a few minutes.
+
+1. Start the PostgreSQL database using Docker Compose
+2. Install project dependencies with `uv`
+3. Configure environment variables
+4. Run migrations
+5. Start the Django development server
+
+```bash
+docker compose up -d
+uv sync
+python manage.py migrate
+python manage.py runserver
+```
+
+Continue with the [Getting Started](backend/setup) guide for a complete setup walkthrough.
+
+---
+
+## Development Guides
+
+### Setup
+
+Configure your local environment and run the application.
+
+→ Getting Started
+
+### Architecture
+
+Understand how the application is structured.
+
+→ Architecture
+
+### API Reference
+
+Explore available endpoints, request formats, and response schemas.
+
+→ API Reference
+
+### Testing
+
+Run tests, coverage reports, and quality checks.
+
+→ Developer Workflow
+
+---
+
+## Need Help?
+
+If you're contributing to the platform:
+
+- Review the Architecture guide
+- Follow the Development Workflow documentation
+- Ensure all tests pass before submitting changes
+
+```bash
+pytest --cov
+ruff check .
+black .
+```

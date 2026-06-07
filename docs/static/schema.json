@@ -1,0 +1,105 @@
+openapi: 3.0.3
+info:
+  title: Servox API
+  version: 1.0.0
+  description: AI powered server training platform
+paths:
+  /api/:
+    get:
+      operationId: root_list
+      description: Returns list of all DiningTypes
+      summary: List Dining Types
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - DiningType
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDiningList'
+          description: ''
+  /api/{id}/:
+    get:
+      operationId: root_retrieve
+      description: Return DiningTypes of given id
+      summary: Retrieve Dining Type
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this dining type.
+        required: true
+      tags:
+      - DiningType
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dining'
+          description: ''
+components:
+  schemas:
+    Dining:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 50
+        code:
+          type: string
+          maxLength: 20
+      required:
+      - code
+      - name
+    PaginatedDiningList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Dining'
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid

@@ -16,18 +16,17 @@ from dotenv import load_dotenv
 
 import os
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Change the path accordingly
-load_dotenv(BASE_DIR.parent.parent/ ".env.local")
+load_dotenv(BASE_DIR.parent.parent / ".env.local")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -46,6 +45,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "core",
+    "drf_spectacular",
 ]
 
 MIDDLEWARE = [
@@ -82,13 +82,13 @@ WSGI_APPLICATION = "servox.wsgi.application"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv("POSTGRESQL_DB_NAME"),
-        'USER': os.getenv("POSTGRESQL_DB_USER"),
-        'PASSWORD': os.getenv("POSTGRESQL_DB_PASSWORD"),
-        'HOST': os.getenv("POSTGRESQL_DB_HOST", "db"),
-        'PORT': os.getenv("POSTGRESQL_DB_PORT", "5432"),
+    "default": {
+        "ENGINE": os.getenv("POSTGRESQL_DB_ENGINE"),
+        "NAME": os.getenv("POSTGRESQL_DB_NAME"),
+        "USER": os.getenv("POSTGRESQL_DB_USER"),
+        "PASSWORD": os.getenv("POSTGRESQL_DB_PASSWORD"),
+        "HOST": os.getenv("POSTGRESQL_DB_HOST", "db"),
+        "PORT": os.getenv("POSTGRESQL_DB_PORT", "5432"),
     }
 }
 
@@ -139,6 +139,15 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly",
     ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 100,
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 100,
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Servox API",
+    "DESCRIPTION": "AI powered server training platform",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    # OTHER SETTINGS
 }

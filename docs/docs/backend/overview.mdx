@@ -1,0 +1,27 @@
+# Backend Overview
+
+Welcome to the backend documentation! This section covers the Django application that powers our data layer, business logic, and API.
+
+## Tech Stack
+Our backend is built using modern, robust Python frameworks and libraries:
+
+* **Core Framework:** [Django](https://www.djangoproject.com/)
+* **API Layer:** [Django REST Framework (DRF)](https://www.django-rest-framework.org/)
+* **OpenAPI Generation:** `drf-spectacular`
+* **Database:** PostgreSQL 
+* **Environment:** Python 3.x
+
+## Core Responsibilities
+Currently, the backend is designed to be a lightweight service focused on:
+
+1. **Data Modeling:** Defining the relational schema and managing database tables (e.g., managing the `DiningType` models).
+2. **REST API:** Serving strictly formatted JSON endpoints via ViewSets for frontend applications or external clients to consume.
+3. **Admin Management:** Utilizing the built-in Django admin interface for quick, out-of-the-box content management and data entry.
+
+## Navigating the Backend Docs
+To get up and running, or to understand the codebase better, follow the sections in the sidebar:
+
+* **[Setup](./setup.md):** Instructions for installing Python dependencies, setting up environment variables, applying database migrations, and running the local development server.
+* **[Architecture](./architecture.md):** A high-level look at how our Django project is structured and how different apps interact.
+* **API:** Our automatically generated OpenAPI documentation detailing specific endpoints, request bodies, and responses.
+* **Django Internals:** Deep dives into our specific implementations of DRF ViewSets, Serializers, and (future) Permissions.

@@ -1,0 +1,1 @@
+{"responses":{"200":{"content":{"application/json":{"schema":{"type":"object","properties":{"name":{"type":"string","maxLength":50},"code":{"type":"string","maxLength":20}},"required":["code","name"],"title":"Dining"}}},"description":""}}}
