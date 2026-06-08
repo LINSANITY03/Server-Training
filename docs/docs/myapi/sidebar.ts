@@ -8,6 +8,24 @@ const sidebar: SidebarsConfig = {
     },
     {
       type: "category",
+      label: "AllergyTag",
+      items: [
+        {
+          type: "doc",
+          id: "myapi/allergytag-list",
+          label: "List Allergy Types",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "myapi/allergytag-retrieve",
+          label: "Retrieve Allergy Type",
+          className: "api-method get",
+        },
+      ],
+    },
+    {
+      type: "category",
       label: "DiningType",
       items: [
         {

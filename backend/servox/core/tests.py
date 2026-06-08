@@ -3,8 +3,8 @@ import pytest
 from django.urls import reverse
 from django.utils import timezone
 
-from core.models import DiningType, ScenarioTag
-from core.serializer import DiningSerializer, ScenarioSerializer
+from core.models import DiningType, ScenarioTag, AllergyTag
+from core.serializer import DiningSerializer, ScenarioSerializer, AllergySerializer
 
 # DiningType
 
@@ -79,6 +79,41 @@ def test_retrieve_scenariotag(client):
 @pytest.mark.django_db
 def test_retrieve_scenariotag_not_found(client):
     url = reverse("scenariotag-detail", args=[12334])
+    response = client.get(url)
+
+    assert response.status_code == 404
+
+
+# Allergy
+
+
+@pytest.mark.django_db
+def test_list_allergytag(client):
+    url = reverse("allergytag-list")
+    response = client.get(url)
+
+    allergytags = AllergyTag.objects.all()
+    expected_data = AllergySerializer(allergytags, many=True).data
+
+    assert response.status_code == 200
+    assert response.data["results"] == expected_data
+
+
+@pytest.mark.django_db
+def test_retrieve_allergytag(client):
+    allergytag = AllergyTag.objects.create(name="Mango", created_at=timezone.now())
+    url = reverse("allergytag-detail", args=[allergytag.id])
+    response = client.get(url)
+
+    expected_data = AllergySerializer(allergytag).data
+
+    assert response.status_code == 200
+    assert response.data == expected_data
+
+
+@pytest.mark.django_db
+def test_retrieve_allergytag_not_found(client):
+    url = reverse("allergytag-detail", args=[12334])
     response = client.get(url)
 
     assert response.status_code == 404
