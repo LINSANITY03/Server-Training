@@ -12,14 +12,32 @@ const sidebar: SidebarsConfig = {
       items: [
         {
           type: "doc",
-          id: "myapi/root-list",
+          id: "myapi/diningtype-list",
           label: "List Dining Types",
           className: "api-method get",
         },
         {
           type: "doc",
-          id: "myapi/root-retrieve",
+          id: "myapi/diningtype-retrieve",
           label: "Retrieve Dining Type",
+          className: "api-method get",
+        },
+      ],
+    },
+    {
+      type: "category",
+      label: "ScenarioTag",
+      items: [
+        {
+          type: "doc",
+          id: "myapi/scenariotag-list",
+          label: "List Scenario Types",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "myapi/scenariotag-retrieve",
+          label: "Retrieve Scenario Type",
           className: "api-method get",
         },
       ],
