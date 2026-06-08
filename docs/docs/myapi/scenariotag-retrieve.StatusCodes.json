@@ -1,0 +1,1 @@
+{"responses":{"200":{"content":{"application/json":{"schema":{"type":"object","properties":{"name":{"type":"string","maxLength":50},"description":{"type":"string","maxLength":500}},"required":["description","name"],"title":"Scenario"}}},"description":""}}}

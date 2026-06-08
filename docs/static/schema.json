@@ -4,9 +4,9 @@ info:
   version: 1.0.0
   description: AI powered server training platform
 paths:
-  /api/:
+  /api/diningtype/:
     get:
-      operationId: root_list
+      operationId: diningtype_list
       description: Returns list of all DiningTypes
       summary: List Dining Types
       parameters:
@@ -34,9 +34,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedDiningList'
           description: ''
-  /api/{id}/:
+  /api/diningtype/{id}/:
     get:
-      operationId: root_retrieve
+      operationId: diningtype_retrieve
       description: Return DiningTypes of given id
       summary: Retrieve Dining Type
       parameters:
@@ -57,6 +57,60 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Dining'
+          description: ''
+  /api/scenariotag/:
+    get:
+      operationId: scenariotag_list
+      description: Returns list of all ScenarioTag
+      summary: List Scenario Types
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - ScenarioTag
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedScenarioList'
+          description: ''
+  /api/scenariotag/{id}/:
+    get:
+      operationId: scenariotag_retrieve
+      description: Return ScenarioTag of given id
+      summary: Retrieve Scenario Type
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this scenario tag.
+        required: true
+      tags:
+      - ScenarioTag
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scenario'
           description: ''
 components:
   schemas:
@@ -95,6 +149,41 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Dining'
+    PaginatedScenarioList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Scenario'
+    Scenario:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 50
+        description:
+          type: string
+          maxLength: 500
+      required:
+      - description
+      - name
   securitySchemes:
     basicAuth:
       type: http

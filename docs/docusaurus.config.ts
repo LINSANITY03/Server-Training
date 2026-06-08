@@ -118,7 +118,7 @@ const config: Config = {
         id: "api",
         docsPluginId: "classic",
         config: { 
-          myapi: {
+          api: {
             specPath: "static/schema.json",
             outputDir: "docs/myapi",
             sidebarOptions: {
