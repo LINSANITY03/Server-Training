@@ -1,11 +1,17 @@
 from rest_framework import viewsets
 from drf_spectacular.utils import extend_schema, extend_schema_view
-from core.serializer import AllergySerializer, DiningSerializer, ScenarioSerializer
-from core.models import DiningType, ScenarioTag, AllergyTag
+from core.serializer import (
+    AllergySerializer,
+    DiningSerializer,
+    ScenarioSerializer,
+    SessionScenarioSerializer,
+)
+from core.models import DiningType, ScenarioTag, AllergyTag, Scenario
 
 TAG_DININGTYPE = ["DiningType"]
 TAG_SCENARIO = ["ScenarioTag"]
 TAG_ALLERGY = ["AllergyTag"]
+TAG_SESSION_SCENARIO = ["Scenario"]
 
 
 @extend_schema_view(
@@ -57,3 +63,40 @@ class ScenarioViewSet(viewsets.ReadOnlyModelViewSet):
 class AllergyViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = AllergyTag.objects.all()
     serializer_class = AllergySerializer
+
+
+@extend_schema_view(
+    list=extend_schema(
+        summary="List User Scenarios",
+        description="Returns list of all Scenario",
+        tags=TAG_SESSION_SCENARIO,
+    ),
+    retrieve=extend_schema(
+        summary="Retrieve User Scenario",
+        description="Return Scenario of given id",
+        tags=TAG_SESSION_SCENARIO,
+    ),
+    create=extend_schema(
+        summary="Create User Scenario",
+        description="Create a new Scenario",
+        tags=TAG_SESSION_SCENARIO,
+    ),
+    update=extend_schema(
+        summary="Update User Scenario",
+        description="Replace an existing Scenario",
+        tags=TAG_SESSION_SCENARIO,
+    ),
+    partial_update=extend_schema(
+        summary="Partially Update User Scenario",
+        description="Update specific fields of an Scenario",
+        tags=TAG_SESSION_SCENARIO,
+    ),
+    destroy=extend_schema(
+        summary="Delete User Scenario",
+        description="Delete an Scenario",
+        tags=TAG_SESSION_SCENARIO,
+    ),
+)
+class SessionScenarioViewSet(viewsets.ModelViewSet):
+    queryset = Scenario.objects.all()
+    serializer_class = SessionScenarioSerializer
