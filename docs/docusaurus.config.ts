@@ -116,7 +116,7 @@ const config: Config = {
       "docusaurus-plugin-openapi-docs",
       {
         id: "api",
-        docsPluginId: "classic",
+        docsPluginId: "default",
         config: { 
           api: {
             specPath: "static/schema.json",

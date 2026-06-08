@@ -4,6 +4,60 @@ info:
   version: 1.0.0
   description: AI powered server training platform
 paths:
+  /api/allergytag/:
+    get:
+      operationId: allergytag_list
+      description: Returns list of all AllergyTag
+      summary: List Allergy Types
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - AllergyTag
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAllergyList'
+          description: ''
+  /api/allergytag/{id}/:
+    get:
+      operationId: allergytag_retrieve
+      description: Return AllergyTag of given id
+      summary: Retrieve Allergy Type
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this allergy tag.
+        required: true
+      tags:
+      - AllergyTag
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Allergy'
+          description: ''
   /api/diningtype/:
     get:
       operationId: diningtype_list
@@ -114,6 +168,14 @@ paths:
           description: ''
 components:
   schemas:
+    Allergy:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 50
+      required:
+      - name
     Dining:
       type: object
       properties:
@@ -126,6 +188,29 @@ components:
       required:
       - code
       - name
+    PaginatedAllergyList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Allergy'
     PaginatedDiningList:
       type: object
       required:

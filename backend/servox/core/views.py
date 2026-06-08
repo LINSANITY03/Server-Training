@@ -1,10 +1,11 @@
 from rest_framework import viewsets
 from drf_spectacular.utils import extend_schema, extend_schema_view
-from core.serializer import DiningSerializer, ScenarioSerializer
-from core.models import DiningType, ScenarioTag
+from core.serializer import AllergySerializer, DiningSerializer, ScenarioSerializer
+from core.models import DiningType, ScenarioTag, AllergyTag
 
 TAG_DININGTYPE = ["DiningType"]
 TAG_SCENARIO = ["ScenarioTag"]
+TAG_ALLERGY = ["AllergyTag"]
 
 
 @extend_schema_view(
@@ -39,3 +40,20 @@ class DiningViewSet(viewsets.ReadOnlyModelViewSet):
 class ScenarioViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = ScenarioTag.objects.all()
     serializer_class = ScenarioSerializer
+
+
+@extend_schema_view(
+    list=extend_schema(
+        summary="List Allergy Types",
+        description="Returns list of all AllergyTag",
+        tags=TAG_ALLERGY,
+    ),
+    retrieve=extend_schema(
+        summary="Retrieve Allergy Type",
+        description="Return AllergyTag of given id",
+        tags=TAG_ALLERGY,
+    ),
+)
+class AllergyViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = AllergyTag.objects.all()
+    serializer_class = AllergySerializer
