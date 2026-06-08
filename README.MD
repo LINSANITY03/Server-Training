@@ -1,3 +1,5 @@
 # Server-Training (Servox)
 
-Last updated - 11:15 Jun 1, 2026
+Check https://linsanity03.github.io/Server-Training/ for technical documentation.
+
+Last updated - 11:14 Jun 8, 2026

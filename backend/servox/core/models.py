@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.core.validators import MaxValueValidator
 from django.contrib.auth.models import User
 from django.db import models
@@ -52,7 +53,7 @@ class AllergyTag(models.Model):
         db_table = "allergy_tag"
 
     name = models.CharField(max_length=50, unique=True)
-    created_at = models.DateField()
+    created_at = models.DateTimeField()
 
     def __str__(self):
         return f"{self.name}"
@@ -68,7 +69,7 @@ class Scenario(models.Model):
     dining_type = models.ForeignKey(DiningType, on_delete=models.DO_NOTHING)
     allergy = models.ForeignKey(AllergyTag, on_delete=models.DO_NOTHING)
     scenario = models.ForeignKey(ScenarioTag, on_delete=models.DO_NOTHING)
-    created_at = models.DateField()
+    created_at = models.DateTimeField(default=timezone.now())
 
 
 class Session(models.Model):

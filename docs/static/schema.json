@@ -166,6 +166,176 @@ paths:
               schema:
                 $ref: '#/components/schemas/Scenario'
           description: ''
+  /api/sessionscenario/:
+    get:
+      operationId: sessionscenario_list
+      description: Returns list of all Scenario
+      summary: List User Scenarios
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - Scenario
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSessionScenarioList'
+          description: ''
+    post:
+      operationId: sessionscenario_create
+      description: Create a new Scenario
+      summary: Create User Scenario
+      tags:
+      - Scenario
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionScenario'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SessionScenario'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SessionScenario'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionScenario'
+          description: ''
+  /api/sessionscenario/{id}/:
+    get:
+      operationId: sessionscenario_retrieve
+      description: Return Scenario of given id
+      summary: Retrieve User Scenario
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this scenario.
+        required: true
+      tags:
+      - Scenario
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionScenario'
+          description: ''
+    put:
+      operationId: sessionscenario_update
+      description: Replace an existing Scenario
+      summary: Update User Scenario
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this scenario.
+        required: true
+      tags:
+      - Scenario
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionScenario'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SessionScenario'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SessionScenario'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionScenario'
+          description: ''
+    patch:
+      operationId: sessionscenario_partial_update
+      description: Update specific fields of an Scenario
+      summary: Partially Update User Scenario
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this scenario.
+        required: true
+      tags:
+      - Scenario
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSessionScenario'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSessionScenario'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSessionScenario'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionScenario'
+          description: ''
+    delete:
+      operationId: sessionscenario_destroy
+      description: Delete an Scenario
+      summary: Delete User Scenario
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this scenario.
+        required: true
+      tags:
+      - Scenario
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '204':
+          description: No response body
 components:
   schemas:
     Allergy:
@@ -257,6 +427,51 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Scenario'
+    PaginatedSessionScenarioList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionScenario'
+    PatchedSessionScenario:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+        description:
+          type: string
+          maxLength: 500
+        guest_count:
+          type: integer
+          maximum: 20
+          minimum: -2147483648
+        dining_type:
+          type: integer
+        allergy:
+          type: integer
+        scenario:
+          type: integer
     Scenario:
       type: object
       properties:
@@ -269,6 +484,36 @@ components:
       required:
       - description
       - name
+    SessionScenario:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+        description:
+          type: string
+          maxLength: 500
+        guest_count:
+          type: integer
+          maximum: 20
+          minimum: -2147483648
+        dining_type:
+          type: integer
+        allergy:
+          type: integer
+        scenario:
+          type: integer
+      required:
+      - allergy
+      - description
+      - dining_type
+      - guest_count
+      - id
+      - name
+      - scenario
   securitySchemes:
     basicAuth:
       type: http

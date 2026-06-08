@@ -60,6 +60,48 @@ const sidebar: SidebarsConfig = {
         },
       ],
     },
+    {
+      type: "category",
+      label: "Scenario",
+      items: [
+        {
+          type: "doc",
+          id: "myapi/sessionscenario-list",
+          label: "List User Scenarios",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "myapi/sessionscenario-create",
+          label: "Create User Scenario",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "myapi/sessionscenario-retrieve",
+          label: "Retrieve User Scenario",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "myapi/sessionscenario-update",
+          label: "Update User Scenario",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "myapi/sessionscenario-partial-update",
+          label: "Partially Update User Scenario",
+          className: "api-method patch",
+        },
+        {
+          type: "doc",
+          id: "myapi/sessionscenario-destroy",
+          label: "Delete User Scenario",
+          className: "api-method delete",
+        },
+      ],
+    },
   ],
 };
 
