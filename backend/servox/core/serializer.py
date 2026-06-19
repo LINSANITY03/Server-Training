@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from core.models import DiningType, ScenarioTag, AllergyTag, Scenario
+from core.models import DiningType, ScenarioTag, AllergyTag, Scenario, Product
 
 
 class DiningSerializer(serializers.ModelSerializer):
@@ -24,4 +24,10 @@ class AllergySerializer(serializers.ModelSerializer):
 class SessionScenarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Scenario
+        exclude = ["created_at"]
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
         exclude = ["created_at"]

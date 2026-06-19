@@ -5,13 +5,15 @@ from core.serializer import (
     DiningSerializer,
     ScenarioSerializer,
     SessionScenarioSerializer,
+    ProductSerializer,
 )
-from core.models import DiningType, ScenarioTag, AllergyTag, Scenario
+from core.models import DiningType, ScenarioTag, AllergyTag, Scenario, Product
 
 TAG_DININGTYPE = ["DiningType"]
 TAG_SCENARIO = ["ScenarioTag"]
 TAG_ALLERGY = ["AllergyTag"]
 TAG_SESSION_SCENARIO = ["Scenario"]
+TAG_PRODUCT = ["Product"]
 
 
 @extend_schema_view(
@@ -100,3 +102,20 @@ class AllergyViewSet(viewsets.ReadOnlyModelViewSet):
 class SessionScenarioViewSet(viewsets.ModelViewSet):
     queryset = Scenario.objects.all()
     serializer_class = SessionScenarioSerializer
+
+
+@extend_schema_view(
+    list=extend_schema(
+        summary="List Products",
+        description="Returns list of all Product",
+        tags=TAG_PRODUCT,
+    ),
+    retrieve=extend_schema(
+        summary="Retrieve Product",
+        description="Return Product of given id",
+        tags=TAG_PRODUCT,
+    ),
+)
+class ProductViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
