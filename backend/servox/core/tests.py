@@ -4,13 +4,14 @@ from django.urls import reverse
 from django.utils import timezone
 from rest_framework.test import APIClient
 from django.contrib.auth import get_user_model
-from core.factories import ScenarioFactory
-from core.models import DiningType, ScenarioTag, AllergyTag, Scenario
+from core.factories import ProductFactory, ScenarioFactory
+from core.models import DiningType, ScenarioTag, AllergyTag, Scenario, Product
 from core.serializer import (
     DiningSerializer,
     ScenarioSerializer,
     AllergySerializer,
     SessionScenarioSerializer,
+    ProductSerializer,
 )
 
 User = get_user_model()
@@ -246,3 +247,38 @@ def test_delete_session_scenario(superuser):
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
     assert not Scenario.objects.filter(id=scenario_data.id).exists()
+
+
+# Product
+
+
+@pytest.mark.django_db
+def test_list_product(client):
+    url = reverse("product-list")
+    response = client.get(url)
+
+    product = Product.objects.all()
+    expected_data = ProductSerializer(product, many=True).data
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data["results"] == expected_data
+
+
+@pytest.mark.django_db
+def test_retrieve_product(client):
+    product_data = ProductFactory.create()
+    url = reverse("product-detail", args=[product_data.id])
+    response = client.get(url)
+
+    expected_data = ProductSerializer(product_data).data
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data == expected_data
+
+
+@pytest.mark.django_db
+def test_retrieve_product_not_found(client):
+    url = reverse("product-detail", args=[99999])
+    response = client.get(url)
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND

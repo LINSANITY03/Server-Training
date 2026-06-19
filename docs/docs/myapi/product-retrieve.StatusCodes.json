@@ -1,0 +1,1 @@
+{"responses":{"200":{"content":{"application/json":{"schema":{"type":"object","properties":{"id":{"type":"integer","readOnly":true},"name":{"type":"string","maxLength":50},"description":{"type":"string"},"dining_type":{"type":"integer"},"allergy":{"type":"integer"}},"required":["allergy","description","dining_type","id","name"],"title":"Product"}}},"description":""}}}

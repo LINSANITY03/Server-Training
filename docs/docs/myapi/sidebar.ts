@@ -44,6 +44,24 @@ const sidebar: SidebarsConfig = {
     },
     {
       type: "category",
+      label: "Product",
+      items: [
+        {
+          type: "doc",
+          id: "myapi/product-list",
+          label: "List Products",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "myapi/product-retrieve",
+          label: "Retrieve Product",
+          className: "api-method get",
+        },
+      ],
+    },
+    {
+      type: "category",
       label: "ScenarioTag",
       items: [
         {
