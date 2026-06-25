@@ -1,52 +1,71 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@300;400;500;600&display=swap');
-
 @import "tailwindcss";
 
-:root {
-  --bg: #0f1117;
-  --surface: #181c27;
-  --surface2: #1e2334;
-  --surface3: #252a3d;
-  
-  --amber: #d4943a;
-  --amber-light: #f0b854;
-  --amber-dim: rgba(212, 148, 58, 0.12);
-  
-  --text: #e8e2d5;
-  --text-muted: rgba(232, 226, 213, 0.5);
-  --text-dim: rgba(232, 226, 213, 0.3);
-  
-  --border: rgba(255, 255, 255, 0.07);
-  --border-hover: rgba(255, 255, 255, 0.14);
-  
-  --green: #4ade80;
-  --yellow: #f59e0b;
-  --red: #f87171;
-  
-  --radius: 10px;
-  --radius-lg: 14px;
+@theme {
+  --color-forest-950: #0D1F15;
+  --color-forest-900: #1A3A2A;
+  --color-forest-800: #1F4733;
+  --color-forest-700: #245540;
+  --color-forest-600: #2D7A4F;
+  --color-forest-500: #38966A;
+  --color-forest-400: #4DB882;
+  --color-forest-300: #72CC9E;
+  --color-forest-200: #A8E0C1;
+  --color-forest-100: #D4F0E3;
+  --color-navy-950: #060E16;
+  --color-navy-900: #0F1F2E;
+  --color-navy-800: #162840;
+  --color-navy-700: #1E3A5F;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
-  background-color: var(--bg);
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
+  background-color: #0D1F15;
+  color: #F0F5F0;
+  font-family: Inter, system-ui, sans-serif;
 }
 
-h1, h2, h3, .font-serif {
-  font-family: 'Playfair Display', serif;
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #1A3A2A;
+}
+::-webkit-scrollbar-thumb {
+  background: #2D7A4F;
+  border-radius: 3px;
 }
 
-/* Custom Scrollbar for UX */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { 
-  background: var(--surface3); 
-  border-radius: 3px; 
+.glass {
+  background: rgba(45, 122, 79, 0.08);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(45, 122, 79, 0.2);
 }
-::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
 
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.8); }
+.glass-dark {
+  background: rgba(15, 31, 46, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(45, 122, 79, 0.15);
+}
+
+.pulse-ring {
+  animation: pulseRing 2s ease-out infinite;
+}
+
+@keyframes pulseRing {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+.typing-dot {
+  animation: typingDot 1.4s ease-in-out infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingDot {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-6px); opacity: 1; }
 }
