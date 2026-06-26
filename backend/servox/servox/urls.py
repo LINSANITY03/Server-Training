@@ -23,6 +23,12 @@ from drf_spectacular.views import (
     SpectacularRedocView,
 )
 
+from authentication.views import (
+    CustomTokenObtainPairView,
+    CustomTokenRefreshView,
+    CustomTokenVerifyView
+)
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     # schema JSON
@@ -36,4 +42,9 @@ urlpatterns = [
     # ReDoc UI
     path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
     path("api/", include("core.urls")),
+
+    # Authentication
+    path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', CustomTokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/verify/', CustomTokenVerifyView.as_view(), name='token_verify'),
 ]
