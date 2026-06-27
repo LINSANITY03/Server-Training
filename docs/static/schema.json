@@ -25,8 +25,7 @@ paths:
       tags:
       - AllergyTag
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -49,8 +48,7 @@ paths:
       tags:
       - AllergyTag
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -79,8 +77,7 @@ paths:
       tags:
       - DiningType
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -103,8 +100,7 @@ paths:
       tags:
       - DiningType
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -133,8 +129,7 @@ paths:
       tags:
       - Product
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -157,8 +152,7 @@ paths:
       tags:
       - Product
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -187,8 +181,7 @@ paths:
       tags:
       - ScenarioTag
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -211,8 +204,7 @@ paths:
       tags:
       - ScenarioTag
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -241,8 +233,7 @@ paths:
       tags:
       - Scenario
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -269,8 +260,7 @@ paths:
               $ref: '#/components/schemas/SessionScenario'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '201':
           content:
@@ -293,8 +283,7 @@ paths:
       tags:
       - Scenario
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -328,8 +317,7 @@ paths:
               $ref: '#/components/schemas/SessionScenario'
         required: true
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -362,8 +350,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedSessionScenario'
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '200':
           content:
@@ -385,11 +372,89 @@ paths:
       tags:
       - Scenario
       security:
-      - cookieAuth: []
-      - basicAuth: []
+      - jwtAuth: []
       responses:
         '204':
           description: No response body
+  /api/token/:
+    post:
+      operationId: token_create
+      description: Obtain access and refresh JWT tokens by providing username and
+        password.
+      summary: Login and get JWT tokens
+      tags:
+      - Token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MyTokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MyTokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MyTokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MyTokenObtainPair'
+          description: ''
+  /api/token/refresh/:
+    post:
+      operationId: token_refresh_create
+      description: Refresh an expired access token using a valid refresh token.
+      summary: Refresh access token
+      tags:
+      - Token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/token/verify/:
+    post:
+      operationId: token_verify_create
+      description: Verify if a JWT token is valid or expired.
+      summary: Verify token
+      tags:
+      - Token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenVerify'
+          description: ''
 components:
   schemas:
     Allergy:
@@ -412,6 +477,18 @@ components:
       required:
       - code
       - name
+    MyTokenObtainPair:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - password
+      - username
     PaginatedAllergyList:
       type: object
       required:
@@ -612,11 +689,28 @@ components:
       - id
       - name
       - scenario
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+    TokenVerify:
+      type: object
+      properties:
+        token:
+          type: string
+          writeOnly: true
+      required:
+      - token
   securitySchemes:
-    basicAuth:
+    jwtAuth:
       type: http
-      scheme: basic
-    cookieAuth:
-      type: apiKey
-      in: cookie
-      name: sessionid
+      scheme: bearer
+      bearerFormat: JWT

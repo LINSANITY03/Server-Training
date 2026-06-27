@@ -120,6 +120,30 @@ const sidebar: SidebarsConfig = {
         },
       ],
     },
+    {
+      type: "category",
+      label: "Token",
+      items: [
+        {
+          type: "doc",
+          id: "myapi/token-create",
+          label: "Login and get JWT tokens",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "myapi/token-refresh-create",
+          label: "Refresh access token",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "myapi/token-verify-create",
+          label: "Verify token",
+          className: "api-method post",
+        },
+      ],
+    },
   ],
 };
 

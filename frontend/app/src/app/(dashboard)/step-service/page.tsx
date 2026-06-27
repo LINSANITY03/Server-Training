@@ -120,7 +120,7 @@ export default function ServiceStepsPage() {
       <div className="flex">
         {/* Sidebar phase nav (journey + reference mode) */}
         {viewMode !== 'checklist' && (
-          <aside className="hidden xl:flex flex-col w-56 sticky top-[89px] h-[calc(100vh-89px)] p-4 gap-1 overflow-y-auto border-r"
+          <aside className="hidden xl:flex flex-col w-56 sticky top-22.25 h-[calc(100vh-89px)] p-4 gap-1 overflow-y-auto border-r"
             style={{ borderColor: 'rgba(45,122,79,0.15)' }}>
             {servicePhases.map((phase, i) => {
               const phasePct = getPhaseProgress(phase.id, completedIds);
@@ -151,7 +151,7 @@ export default function ServiceStepsPage() {
         <div className="flex-1 p-6 lg:p-8 space-y-4">
           {/* Filter bar */}
           <div className="flex items-center gap-3 mb-6">
-            <Filter className="w-4 h-4 flex-shrink-0" style={{ color: '#6B8F7A' }} />
+            <Filter className="w-4 h-4 shrink-0" style={{ color: '#6B8F7A' }} />
             <span className="text-xs" style={{ color: '#6B8F7A' }}>Show:</span>
             {([['all', 'All steps'], ['critical', '🔴 Critical only (20pts)'], ['important', '🟡 Important+ (10pts)']] as [typeof filterWeight, string][]).map(([val, label]) => (
               <button key={val} onClick={() => setFilterWeight(val)}
@@ -181,7 +181,7 @@ export default function ServiceStepsPage() {
                     <button onClick={() => togglePhase(phase.id)}
                       className="w-full flex items-center gap-4 px-6 py-5 text-left transition-colors"
                       style={{ background: isExpanded ? 'rgba(45,122,79,0.08)' : 'transparent' }}>
-                      <div className="w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+                      <div className="w-11 h-11 rounded-xl flex items-center justify-center text-xl shrink-0"
                         style={{ background: `${phase.color}20`, border: `1px solid ${phase.color}40` }}>
                         {phase.icon}
                       </div>
@@ -197,8 +197,8 @@ export default function ServiceStepsPage() {
                         </p>
                       </div>
                       {isExpanded
-                        ? <ChevronDown className="w-5 h-5 flex-shrink-0" style={{ color: '#6B8F7A' }} />
-                        : <ChevronRight className="w-5 h-5 flex-shrink-0" style={{ color: '#6B8F7A' }} />}
+                        ? <ChevronDown className="w-5 h-5 shrink-0" style={{ color: '#6B8F7A' }} />
+                        : <ChevronRight className="w-5 h-5 shrink-0" style={{ color: '#6B8F7A' }} />}
                     </button>
 
                     {isExpanded && (
@@ -244,7 +244,7 @@ export default function ServiceStepsPage() {
                                       </div>
                                       <p className="text-sm font-medium mt-1" style={{ color: '#F0F5F0' }}>{step.criteria}</p>
                                     </div>
-                                    <Info className="w-4 h-4 flex-shrink-0 mt-1" style={{ color: isExpStep ? '#4DB882' : '#3A5A45' }} />
+                                    <Info className="w-4 h-4 shrink-0 mt-1" style={{ color: isExpStep ? '#4DB882' : '#3A5A45' }} />
                                   </button>
 
                                   {isExpStep && step.tip && (
@@ -320,7 +320,7 @@ export default function ServiceStepsPage() {
                           <button key={step.id} onClick={() => toggleComplete(step.id)}
                             className="w-full flex items-center gap-4 px-6 py-3.5 text-left transition-all group"
                             style={{ background: done ? 'rgba(45,122,79,0.06)' : 'transparent' }}>
-                            <div className="flex-shrink-0">
+                            <div className="shrink-0">
                               {done
                                 ? <CheckCircle2 className="w-5 h-5" style={{ color: '#4DB882' }} />
                                 : <Circle className="w-5 h-5" style={{ color: '#3A5A45' }} />}
@@ -331,7 +331,7 @@ export default function ServiceStepsPage() {
                               </p>
                               <span className="text-xs" style={{ color: '#3A5A45' }}>{step.code}</span>
                             </div>
-                            <div className="flex items-center gap-2 flex-shrink-0">
+                            <div className="flex items-center gap-2 shrink-0">
                               <span className="text-xs px-2 py-0.5 rounded-full"
                                 style={{ background: wCfg.bg, color: wCfg.color }}>
                                 {step.weight > 0 ? `${step.weight}pts` : 'obs.'}

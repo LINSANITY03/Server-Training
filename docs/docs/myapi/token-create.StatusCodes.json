@@ -1,0 +1,1 @@
+{"responses":{"200":{"content":{"application/json":{"schema":{"type":"object","properties":{"username":{"type":"string","writeOnly":true},"password":{"type":"string","writeOnly":true}},"required":["password","username"],"title":"MyTokenObtainPair"}}},"description":""}}}
