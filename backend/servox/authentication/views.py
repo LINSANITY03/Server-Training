@@ -10,6 +10,7 @@ from authentication.serializers import MyTokenObtainPairSerializer
 
 TAG_TOKEN = ["Token"]
 
+
 @extend_schema(
     tags=TAG_TOKEN,
     summary="Login and get JWT tokens",
