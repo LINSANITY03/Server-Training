@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Zap, Eye, EyeOff, ChefHat } from 'lucide-react';
+import { signIn } from 'next-auth/react';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -11,11 +12,30 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [isSignup, setIsSignup] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
     setLoading(true);
-    await new Promise(r => setTimeout(r, 1200));
-    router.push('/dashboard');
+    if (!isSignup){
+      try {
+        const res = await signIn('credentials', {
+          email: email,
+          password: password,
+          redirect: false,
+        });
+
+        if (res && !res.error) {
+          // after successful login user will automatically direct to dashboard.
+          console.log('Sign-in successful');
+          router.push("/dashboard");
+        } else {
+          console.log('Sign-in failed:', res?.error)
+          setLoading(false);
+        }
+      } catch (error){
+        console.log('Error detected:', error)
+        setLoading(false);
+      }
+    }
   };
 
   return (

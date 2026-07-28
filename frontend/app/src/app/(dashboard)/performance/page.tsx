@@ -101,7 +101,7 @@ export default function PerformancePage() {
         <div className="relative">
           <div className="absolute top-5 left-5 right-5 h-0.5" style={{ background: 'rgba(45,122,79,0.2)' }} />
           <div className="flex justify-between relative">
-            {serviceSteps.map((step, i) => (
+            {serviceSteps.map((step) => (
               <div key={step.step} className="flex flex-col items-center gap-2" style={{ width: `${100 / serviceSteps.length}%` }}>
                 <div className="w-10 h-10 rounded-full flex items-center justify-center z-10 relative transition-all"
                   style={{

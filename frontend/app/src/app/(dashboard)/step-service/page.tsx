@@ -123,7 +123,6 @@ export default function ServiceStepsPage() {
           <aside className="hidden xl:flex flex-col w-56 sticky top-22.25 h-[calc(100vh-89px)] p-4 gap-1 overflow-y-auto border-r"
             style={{ borderColor: 'rgba(45,122,79,0.15)' }}>
             {servicePhases.map((phase, i) => {
-              const phasePct = getPhaseProgress(phase.id, completedIds);
               return (
                 <button key={phase.id} onClick={() => scrollToPhase(phase.id)}
                   className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left transition-all group"
@@ -171,7 +170,6 @@ export default function ServiceStepsPage() {
             <div className="space-y-3">
               {filteredPhases.map((phase, phaseIndex) => {
                 const isExpanded = expandedPhases.includes(phase.id);
-                const phaseCompleted = phase.steps.filter(s => completedIds.includes(s.id)).length;
 
                 return (
                   <div key={phase.id} ref={el => { phaseRefs.current[phase.id] = el; }}

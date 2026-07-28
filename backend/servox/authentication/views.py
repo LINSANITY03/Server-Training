@@ -6,7 +6,10 @@ from rest_framework_simplejwt.views import (
 
 from drf_spectacular.utils import extend_schema
 
-from authentication.serializers import MyTokenObtainPairSerializer
+from authentication.serializers import (
+    LoginRequestSerializer,
+    MyTokenObtainPairSerializer,
+)
 
 TAG_TOKEN = ["Token"]
 
@@ -15,6 +18,7 @@ TAG_TOKEN = ["Token"]
     tags=TAG_TOKEN,
     summary="Login and get JWT tokens",
     description="Obtain access and refresh JWT tokens by providing username and password.",
+    request=LoginRequestSerializer,
 )
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer

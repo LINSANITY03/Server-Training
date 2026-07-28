@@ -54,7 +54,6 @@ function SessionContent() {
 
   // Loading sequence
   useEffect(() => {
-    if (!isNew) { setLoading(false); return; }
     const phases = [800, 1400, 2000, 2600, 3200];
     const timeouts = phases.map((delay, i) =>
       setTimeout(() => {
@@ -143,7 +142,7 @@ function SessionContent() {
 
   const triggerEvent = (eventType: typeof EVENT_OPTIONS[0]) => {
     const newEvent: SessionEvent = {
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       type: eventType.type,
       label: eventType.label,
       timestamp: new Date(),
@@ -153,7 +152,7 @@ function SessionContent() {
 
     // Add as system message
     const eventMsg: Message = {
-      id: (Date.now() + 100).toString(),
+      id: crypto.randomUUID(),
       role: 'guest',
       content: eventType.type === 'food_delayed'
         ? 'Excuse me, we\'ve been waiting quite a while. Where are our main courses?'
@@ -316,7 +315,7 @@ function SessionContent() {
         {messages.map(msg => (
           <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-slide-up`}>
             {msg.role === 'guest' && (
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mr-3 mt-1"
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mr-3 mt-1"
                 style={{ background: msg.guestName?.startsWith('⚠') ? 'rgba(251,191,36,0.2)' : 'rgba(91,33,182,0.3)' }}>
                 {msg.guestName?.startsWith('⚠')
                   ? <AlertTriangle className="w-4 h-4" style={{ color: '#FBBF24' }} />
@@ -384,7 +383,7 @@ function SessionContent() {
               onBlur={e => (e.target.style.borderColor = 'rgba(45,122,79,0.25)')}
             />
             <button onClick={sendMessage} disabled={!input.trim()}
-              className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-all"
+              className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-all"
               style={{
                 background: input.trim() ? 'linear-gradient(135deg, #2D7A4F, #38966A)' : 'rgba(45,122,79,0.2)',
                 color: input.trim() ? '#F0F5F0' : '#3A5A45',

@@ -113,7 +113,7 @@ export default function DashboardPage() {
                 <div key={session.id} className="p-4 rounded-xl" style={{ background: '#0D1F15', border: `1px solid ${cfg.color}30` }}>
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <p className="text-sm font-medium leading-snug" style={{ color: '#F0F5F0' }}>{session.scenario}</p>
-                    <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full flex-shrink-0"
+                    <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full shrink-0"
                       style={{ background: cfg.bg, color: cfg.color }}>
                       <Icon className="w-3 h-3" />{cfg.label}
                     </span>
@@ -147,7 +147,7 @@ export default function DashboardPage() {
             return (
               <div key={session.id} className="px-6 py-4 flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
                     style={{ background: cfg.bg }}>
                     <Icon className="w-5 h-5" style={{ color: cfg.color }} />
                   </div>

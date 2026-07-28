@@ -5,6 +5,7 @@ import {
   LayoutDashboard, MessageSquare, TrendingUp, Settings,
   LogOut, Zap, ChevronRight, Server
 } from 'lucide-react';
+import { signOut } from 'next-auth/react';
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -49,7 +50,7 @@ export default function Sidebar() {
                 border: active ? '1px solid rgba(45,122,79,0.4)' : '1px solid transparent',
               }}
             >
-              <Icon className="w-5 h-5 flex-shrink-0" />
+              <Icon className="w-5 h-5 shrink-0" />
               <span className="text-sm font-medium">{label}</span>
               {active && <ChevronRight className="w-4 h-4 ml-auto" />}
             </Link>
@@ -74,8 +75,9 @@ export default function Sidebar() {
           style={{ color: '#6B8F7A' }}
           onMouseEnter={e => (e.currentTarget.style.color = '#F87171')}
           onMouseLeave={e => (e.currentTarget.style.color = '#6B8F7A')}
+          onClick={() => signOut({callbackUrl: "/"})}
         >
-          <LogOut className="w-4 h-4" />
+          <LogOut className="w-4 h-4"/>
           Sign out
         </button>
       </div>

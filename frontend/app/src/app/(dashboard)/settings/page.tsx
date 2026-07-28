@@ -1,5 +1,5 @@
 'use client';
-import { Bell, Shield, User, Palette } from 'lucide-react';
+import { Bell, User } from 'lucide-react';
 
 const sections = [
   {
