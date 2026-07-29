@@ -1,6 +1,6 @@
 import factory
 from django.utils import timezone
-from core.models import AllergyTag, DiningType, Scenario, ScenarioTag, Product
+from core.models import AllergyTag, DiningType, Scenario, Product
 
 
 class DiningTypeFactory(factory.django.DjangoModelFactory):
@@ -21,15 +21,6 @@ class AllergyTagFactory(factory.django.DjangoModelFactory):
     created_at = timezone.now()
 
 
-class ScenarioTagFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = ScenarioTag
-
-    name = factory.Sequence(lambda n: f"ScenarioTag {n}")
-    description = factory.Sequence(lambda n: f"ScenarioTag {n}")
-    created_at = timezone.now()
-
-
 class ScenarioFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Scenario
@@ -40,7 +31,6 @@ class ScenarioFactory(factory.django.DjangoModelFactory):
 
     dining_type = factory.SubFactory(DiningTypeFactory)
     allergy = factory.SubFactory(AllergyTagFactory)
-    scenario = factory.SubFactory(ScenarioTagFactory)
     created_at = timezone.now()
 
 

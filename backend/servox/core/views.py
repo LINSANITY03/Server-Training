@@ -3,11 +3,10 @@ from drf_spectacular.utils import extend_schema, extend_schema_view
 from core.serializer import (
     AllergySerializer,
     DiningSerializer,
-    ScenarioSerializer,
     SessionScenarioSerializer,
     ProductSerializer,
 )
-from core.models import DiningType, ScenarioTag, AllergyTag, Scenario, Product
+from core.models import DiningType, AllergyTag, Scenario, Product
 
 TAG_DININGTYPE = ["DiningType"]
 TAG_SCENARIO = ["ScenarioTag"]
@@ -31,23 +30,6 @@ TAG_PRODUCT = ["Product"]
 class DiningViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = DiningType.objects.all()
     serializer_class = DiningSerializer
-
-
-@extend_schema_view(
-    list=extend_schema(
-        summary="List Scenario Types",
-        description="Returns list of all ScenarioTag",
-        tags=TAG_SCENARIO,
-    ),
-    retrieve=extend_schema(
-        summary="Retrieve Scenario Type",
-        description="Return ScenarioTag of given id",
-        tags=TAG_SCENARIO,
-    ),
-)
-class ScenarioViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = ScenarioTag.objects.all()
-    serializer_class = ScenarioSerializer
 
 
 @extend_schema_view(

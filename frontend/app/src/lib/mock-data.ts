@@ -133,20 +133,21 @@ export const serviceSteps = [
   { step: 8, name: 'Farewell', completed: false },
 ];
 
-export const scenarios = [
-  'Fine Dining Evening Service',
-  'Brunch Service Rush',
-  'Corporate Lunch',
-  'Wedding Banquet',
-  'Casual Bistro',
-  'Room Service',
-  'Bar & Lounge Service',
-  'Outdoor Terrace',
-];
-
 export const allergiesList = [
-  'Gluten', 'Dairy', 'Eggs', 'Shellfish', 'Tree Nuts',
-  'Peanuts', 'Soy', 'Fish', 'Sesame', 'Mustard',
+  'Gluten',
+  'Crustaceans',
+  'Eggs',
+  'Fish',
+  'Peanuts',
+  'Soybeans',
+  'Milk',
+  'Nuts',
+  'Celery',
+  'Mustard',
+  'Sesame',
+  'Sulphites',
+  'Lupin',
+  'Molluscs',
 ];
 
 export const diningTypes = [

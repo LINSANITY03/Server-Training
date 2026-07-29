@@ -1,4 +1,3 @@
-from django.utils import timezone
 from django.core.validators import MaxValueValidator
 from django.contrib.auth.models import User
 from django.db import models
@@ -17,7 +16,7 @@ class Profile(models.Model):
     department = models.CharField(max_length=50)
     site = models.CharField(max_length=20)
     status = models.CharField(max_length=20, choices=STATUS, default="Trainee")
-    created_at = models.DateField(default=timezone.now())
+    created_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.department} {self.user.first_name}"
@@ -36,24 +35,13 @@ class DiningType(models.Model):
         return f"{self.name}"
 
 
-class ScenarioTag(models.Model):
-    class Meta:
-        db_table = "scenario_tag"
-
-    name = models.CharField(max_length=50)
-    description = models.CharField(max_length=500)
-    created_at = models.DateTimeField()
-
-    def __str__(self):
-        return f"{self.name}"
-
-
 class AllergyTag(models.Model):
     class Meta:
         db_table = "allergy_tag"
 
     name = models.CharField(max_length=50, unique=True)
-    created_at = models.DateTimeField()
+    is_major = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.name}"
@@ -65,25 +53,31 @@ class Scenario(models.Model):
 
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=500)
-    guest_count = models.IntegerField(validators=[MaxValueValidator(20)])
-    dining_type = models.ForeignKey(DiningType, on_delete=models.DO_NOTHING)
-    allergy = models.ForeignKey(AllergyTag, on_delete=models.DO_NOTHING)
-    scenario = models.ForeignKey(ScenarioTag, on_delete=models.DO_NOTHING)
-    created_at = models.DateTimeField(default=timezone.now())
+    guest_count = models.PositiveSmallIntegerField(validators=[MaxValueValidator(20)])
+    dining_type = models.ForeignKey(DiningType, on_delete=models.PROTECT)
+    allergy = models.ForeignKey(AllergyTag, on_delete=models.PROTECT)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class Session(models.Model):
     class Meta:
         db_table = "training_session"
 
-    STATUS = {"Ongoing": "Ongoing", "Completed": "Completed"}
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    class Status(models.TextChoices):
+        ONGOING = "Ongoing", "Ongoing"
+        COMPLETED = "Completed", "Completed"
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sessions")
     end_at = models.DateField()
-    last_edited = models.DateField(null=True)
+    last_edited = models.DateField(null=True, auto_now=True)
     metadata = models.JSONField(default=dict)
-    scenario = models.ForeignKey(Scenario, on_delete=models.DO_NOTHING)
-    status = models.CharField(max_length=20, choices=STATUS, default="Ongoing")
-    created_at = models.DateField()
+    scenario = models.ForeignKey(
+        Scenario, on_delete=models.PROTECT, related_name="sessions"
+    )
+    status = models.CharField(
+        max_length=20, choices=Status.choices, default=Status.ONGOING
+    )
+    created_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.scenario}-{self.id}"

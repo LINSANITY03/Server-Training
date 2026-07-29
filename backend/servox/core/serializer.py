@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from core.models import DiningType, ScenarioTag, AllergyTag, Scenario, Product
+from core.models import DiningType, AllergyTag, Scenario, Product
 
 
 class DiningSerializer(serializers.ModelSerializer):
@@ -9,22 +9,28 @@ class DiningSerializer(serializers.ModelSerializer):
         fields = ["name", "code"]
 
 
-class ScenarioSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ScenarioTag
-        fields = ["name", "description"]
-
-
 class AllergySerializer(serializers.ModelSerializer):
     class Meta:
         model = AllergyTag
-        fields = ["name"]
+        fields = ["name", "id"]
 
 
 class SessionScenarioSerializer(serializers.ModelSerializer):
+    dining_type = serializers.PrimaryKeyRelatedField(queryset=DiningType.objects.all())
+    allergy = serializers.PrimaryKeyRelatedField(queryset=AllergyTag.objects.all())
+
     class Meta:
         model = Scenario
         exclude = ["created_at"]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        data["dining_type"] = {"name": instance.dining_type.name}
+
+        data["allergy"] = {"name": instance.allergy.name}
+
+        return data
 
 
 class ProductSerializer(serializers.ModelSerializer):
