@@ -1,1 +1,1 @@
-{"responses":{"200":{"content":{"application/json":{"schema":{"type":"object","properties":{"username":{"type":"string","writeOnly":true},"password":{"type":"string","writeOnly":true}},"required":["password","username"],"title":"MyTokenObtainPair"}}},"description":""}}}
+{"responses":{"200":{"content":{"application/json":{"schema":{"type":"object","properties":{"email":{"type":"string","format":"email","writeOnly":true},"password":{"type":"string","writeOnly":true}},"required":["email","password"],"title":"MyTokenObtainPair"}}},"description":""}}}

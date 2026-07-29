@@ -17,7 +17,7 @@ class Profile(models.Model):
     department = models.CharField(max_length=50)
     site = models.CharField(max_length=20)
     status = models.CharField(max_length=20, choices=STATUS, default="Trainee")
-    created_at = models.DateField()
+    created_at = models.DateField(default=timezone.now())
 
     def __str__(self):
         return f"{self.department} {self.user.first_name}"

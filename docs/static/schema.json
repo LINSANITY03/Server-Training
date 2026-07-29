@@ -379,8 +379,7 @@ paths:
   /api/token/:
     post:
       operationId: token_create
-      description: Obtain access and refresh JWT tokens by providing username and
-        password.
+      description: Obtain access and refresh JWT tokens by providing email and password.
       summary: Login and get JWT tokens
       tags:
       - Token
@@ -388,13 +387,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MyTokenObtainPair'
+              $ref: '#/components/schemas/LoginRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/MyTokenObtainPair'
+              $ref: '#/components/schemas/LoginRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/MyTokenObtainPair'
+              $ref: '#/components/schemas/LoginRequest'
         required: true
       responses:
         '200':
@@ -477,18 +476,32 @@ components:
       required:
       - code
       - name
-    MyTokenObtainPair:
+    LoginRequest:
       type: object
       properties:
-        username:
+        email:
           type: string
+          format: email
           writeOnly: true
         password:
           type: string
           writeOnly: true
       required:
+      - email
       - password
-      - username
+    MyTokenObtainPair:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - email
+      - password
     PaginatedAllergyList:
       type: object
       required:

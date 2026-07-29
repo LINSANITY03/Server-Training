@@ -44,8 +44,8 @@ AI powered server training platform
     className={"openapi-tabs__security-schemes"}
   >
     <TabItem
-      label={"HTTP: Basic Auth"}
-      value={"basicAuth"}
+      label={"HTTP: Bearer Auth"}
+      value={"jwtAuth"}
     >
       
       
@@ -64,34 +64,13 @@ AI powered server training platform
               <th>
                 HTTP Authorization Scheme:
               </th><td>
-                basic
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </TabItem><TabItem
-      label={"API Key: cookieAuth"}
-      value={"cookieAuth"}
-    >
-      
-      
-      
-      
-      <div>
-        <table>
-          <tbody>
-            <tr>
-              <th>
-                Security Scheme Type:
-              </th><td>
-                apiKey
+                bearer
               </td>
             </tr><tr>
               <th>
-                Cookie parameter name:
+                Bearer format:
               </th><td>
-                sessionid
+                JWT
               </td>
             </tr>
           </tbody>

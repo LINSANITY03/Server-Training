@@ -17,7 +17,7 @@ TAG_TOKEN = ["Token"]
 @extend_schema(
     tags=TAG_TOKEN,
     summary="Login and get JWT tokens",
-    description="Obtain access and refresh JWT tokens by providing username and password.",
+    description="Obtain access and refresh JWT tokens by providing email and password.",
     request=LoginRequestSerializer,
 )
 class CustomTokenObtainPairView(TokenObtainPairView):
