@@ -1,59 +1,39 @@
-import { AllergyConfigSchema, TrainingConfigSchema } from "@/types/training";
-import getApiBase, { getAuthToken } from "./helper";
-import { JWT } from "next-auth/jwt";
+import {
+  CreateSession
+} from "@/types/training";
 
 export async function getTrainingConfig() {
-  const API_BASE_URL = getApiBase();
-  const token: JWT = await getAuthToken();
-
-  const response = await fetch(`${API_BASE_URL}/api/sessionscenario/`, {
-    method: "GET",
-    headers: {
-      "Authorization": `Bearer ${token.accessToken}`,
-      "Content-Type": "application/json",
-    },
-  });
+  const response = await fetch("/api/training/config");
 
   if (!response.ok) {
     throw new Error("Failed to fetch training configuration");
   }
 
-  const data = await response.json();
-
-  const result = TrainingConfigSchema.safeParse(data);
-
-  if (!result.success) {
-    console.error("Invalid training config:", result.error);
-    throw new Error("Invalid training configuration response");
-  }
-
-  return result.data;
+  return response.json();
 }
 
 export async function getAllergy() {
-  const API_BASE_URL = getApiBase();
-  const token: JWT = await getAuthToken();
+  const response = await fetch("/api/training/allergy");
 
-  const response = await fetch(`${API_BASE_URL}/api/allergytag/`, {
-    method: "GET",
+  if (!response.ok) {
+    throw new Error("Failed to fetch allergy");
+  }
+
+  return response.json();
+}
+
+export async function createSession(payload: CreateSession) {
+  const response = await fetch("/api/training/session", {
+    method: "POST",
     headers: {
-      "Authorization": `Bearer ${token.accessToken}`,
       "Content-Type": "application/json",
     },
+    body: JSON.stringify(payload),
   });
 
   if (!response.ok) {
-    throw new Error("Failed to fetch allergies");
+    throw new Error("Failed to fetch session");
   }
 
-  const data = await response.json();
-
-  const result = AllergyConfigSchema.safeParse(data);
-
-  if (!result.success) {
-    console.error("Invalid allergy:", result.error);
-    throw new Error("Invalid allergy response");
-  }
-
-  return result.data;
+  return response.json();
 }

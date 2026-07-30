@@ -13,6 +13,14 @@ class AllergyTagAdmin(admin.ModelAdmin):
     search_fields = ("name",)
 
 
-admin.site.register(Scenario)
+@admin.register(Scenario)
+class ScenarioAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "description", "dining_type", "created_at")
+
+
 admin.site.register(Product)
-admin.site.register(Session)
+
+
+@admin.register(Session)
+class SessionAdmin(admin.ModelAdmin):
+    list_display = ("id", "scenario", "created_at", "user")

@@ -2,6 +2,8 @@ from django.core.validators import MaxValueValidator
 from django.contrib.auth.models import User
 from django.db import models
 
+import uuid
+
 
 class Profile(models.Model):
     class Meta:
@@ -58,6 +60,9 @@ class Scenario(models.Model):
     allergy = models.ForeignKey(AllergyTag, on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"{self.name}"
+
 
 class Session(models.Model):
     class Meta:
@@ -67,9 +72,10 @@ class Session(models.Model):
         ONGOING = "Ongoing", "Ongoing"
         COMPLETED = "Completed", "Completed"
 
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sessions")
-    end_at = models.DateField()
-    last_edited = models.DateField(null=True, auto_now=True)
+    end_at = models.DateTimeField(blank=True, null=True)
+    last_edited = models.DateTimeField(null=True, auto_now=True)
     metadata = models.JSONField(default=dict)
     scenario = models.ForeignKey(
         Scenario, on_delete=models.PROTECT, related_name="sessions"
@@ -77,7 +83,8 @@ class Session(models.Model):
     status = models.CharField(
         max_length=20, choices=Status.choices, default=Status.ONGOING
     )
-    created_at = models.DateField(auto_now_add=True)
+    allergy = models.ManyToManyField(AllergyTag, related_name="sessions", blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.scenario}-{self.id}"

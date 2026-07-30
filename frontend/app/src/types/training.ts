@@ -3,6 +3,7 @@ import { z } from "zod";
 export interface TrainingOption {
   name: string;
 }
+
 const PaginatedSchema = <T extends z.ZodTypeAny>(itemSchema: T) =>
   z.object({
     count: z.number(),
@@ -34,5 +35,15 @@ export const AllergySchema = z.object({
 export const AllergyConfigSchema = PaginatedSchema(AllergySchema);
 
 export type Allergy = z.infer<typeof AllergySchema>
-export type AllergyConfig = z.infer<typeof AllergyConfigSchema>;
+
+export const CreateSessionPayloadSchema = z.object({
+  scenario_id: z.number(),
+  allergy: z.array(AllergySchema),
+});
+
+export const SessionSchema = z.object({
+  uuid: z.string(),
+})
+export type CreateSession = z.infer<typeof CreateSessionPayloadSchema>;
+
 
