@@ -1,5 +1,5 @@
 "use client";
-import { getAllergy, getTrainingConfig } from "@/lib/training";
+import { createSession, getAllergy, getTrainingConfig } from "@/lib/training";
 import { Allergy, SessionScenario } from "@/types/training";
 import {
   AlertTriangle,
@@ -58,10 +58,28 @@ export default function ChatSetupPage() {
   };
 
   const handleStart = async () => {
-    if (!scenario) return;
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 100));
-    router.push(`/chat/session?id=asd`);
+    if (!selectedScenario || !selectedAllergies) return;
+
+    try {
+      setLoading(true);
+
+      const payload = {
+        scenario_id: selectedScenario.id,
+        allergy: selectedAllergies,
+      };
+
+      const response = await createSession(payload);
+
+      if (response.uuid) {
+        alert("Scenario created");
+        router.push(`/chat/session?id=${response.uuid}`);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Failed to create scenario");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const sessionTypes = [
@@ -305,10 +323,10 @@ export default function ChatSetupPage() {
               );
             })}
           </div>
-          {allergies.length > 0 && (
+          {selectedAllergies.length > 0 && (
             <p className="text-xs mt-3" style={{ color: "#FBBF24" }}>
-              ⚠ {allergies.length} restriction
-              {allergies.length !== 1 ? "s" : ""} active — the AI will test your
+              ⚠ {selectedAllergies.length} restriction
+              {selectedAllergies.length !== 1 ? "s" : ""} active — the AI will test your
               handling
             </p>
           )}

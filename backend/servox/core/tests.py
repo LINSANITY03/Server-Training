@@ -4,13 +4,14 @@ from django.urls import reverse
 from django.utils import timezone
 from rest_framework.test import APIClient
 from django.contrib.auth import get_user_model
-from core.factories import ProductFactory, ScenarioFactory
-from core.models import DiningType, AllergyTag, Scenario, Product
+from core.factories import ProductFactory, ScenarioFactory, SessionFactory
+from core.models import DiningType, AllergyTag, Scenario, Product, Session
 from core.serializer import (
     DiningSerializer,
     AllergySerializer,
     SessionScenarioSerializer,
     ProductSerializer,
+    SessionSerializer,
 )
 
 User = get_user_model()
@@ -106,7 +107,7 @@ def test_retrieve_allergytag_not_found(authenticated_client):
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
-# Session Scenario
+# Scenario
 
 
 @pytest.mark.django_db
@@ -235,3 +236,99 @@ def test_retrieve_product_not_found(authenticated_client):
     response = authenticated_client.get(url)
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
+# Session
+
+
+@pytest.mark.django_db
+def test_list_session(authenticated_client):
+    url = reverse("session-list")
+    response = authenticated_client.get(url)
+
+    session = Session.objects.all()
+    expected_data = SessionSerializer(session, many=True).data
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data["results"] == expected_data
+
+
+@pytest.mark.django_db
+def test_retrieve_session(authenticated_client):
+
+    factory_session = SessionFactory.create()
+    url = reverse("session-detail", args=[factory_session.id])
+    response = authenticated_client.get(url)
+
+    expected_data = SessionSerializer(factory_session).data
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data == expected_data
+
+
+@pytest.mark.django_db
+def test_create_session(authenticated_client):
+
+    url = reverse("session-list")
+    session_data = SessionFactory.create()
+    payload = {
+        "user": session_data.user.id,
+        "scenario_id": session_data.scenario.id,
+        "metadata": session_data.metadata,
+        "status": session_data.status,
+        "allergy": [{"id": allergy.id} for allergy in session_data.allergy.all()],
+    }
+    response = authenticated_client.post(url, payload, format="json")
+
+    assert response.status_code == status.HTTP_201_CREATED
+
+    new_id = response.data.get("uuid")
+    created = Session.objects.get(uuid=new_id)
+    expected_data = SessionSerializer(created).data
+    assert new_id == expected_data.get("uuid")
+
+
+@pytest.mark.django_db
+def test_update_session(authenticated_client):
+
+    session_data = SessionFactory.create()
+    payload = {
+        "scenario": session_data.scenario.id,
+        "metadata": {"name": "123"},
+        "status": Session.Status.COMPLETED,
+        "allergy": [allergy.id for allergy in session_data.allergy.all()],
+    }
+    url = reverse("session-detail", args=[session_data.id])
+    response = authenticated_client.put(url, payload, format="json")
+
+    assert response.status_code == status.HTTP_200_OK
+    created = Session.objects.get(uuid=session_data.uuid)
+    expected_data = SessionSerializer(created).data
+    assert response.data == expected_data
+
+
+@pytest.mark.django_db
+def test_partial_update_session(authenticated_client):
+
+    session_data = SessionFactory.create()
+    payload = {
+        "status": Session.Status.COMPLETED,
+    }
+    url = reverse("session-detail", args=[session_data.id])
+    response = authenticated_client.patch(url, payload, format="json")
+
+    assert response.status_code == status.HTTP_200_OK
+    created = Session.objects.get(id=session_data.id)
+    expected_data = SessionSerializer(created).data
+    assert expected_data["status"] == payload.get("status")
+
+
+@pytest.mark.django_db
+def test_delete_session(authenticated_client):
+
+    session_data = SessionFactory.create()
+    url = reverse("session-detail", args=[session_data.id])
+    response = authenticated_client.delete(url, format="json")
+
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+    assert not Session.objects.filter(id=session_data.id).exists()

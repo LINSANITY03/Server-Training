@@ -7,13 +7,3 @@ export default function getApiBase() {
 
   return 'http://locahost:8000'
 }
-
-export async function getAuthToken() {
-  const response = await fetch("/api/auth/token");
-
-  if (!response.ok) {
-    throw new Error("Failed to get auth token");
-  }
-  const data = await response.json();
-  return data;
-}

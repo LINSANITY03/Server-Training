@@ -62,19 +62,43 @@ const sidebar: SidebarsConfig = {
     },
     {
       type: "category",
-      label: "ScenarioTag",
+      label: "Session",
       items: [
         {
           type: "doc",
-          id: "myapi/scenariotag-list",
-          label: "List Scenario Types",
+          id: "myapi/session-list",
+          label: "List User Training Session",
           className: "api-method get",
         },
         {
           type: "doc",
-          id: "myapi/scenariotag-retrieve",
-          label: "Retrieve Scenario Type",
+          id: "myapi/session-create",
+          label: "Create User Training Session",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "myapi/session-retrieve",
+          label: "Retrieve User Training Session",
           className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "myapi/session-update",
+          label: "Update User Training Session",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "myapi/session-partial-update",
+          label: "Partially Update User Training Session",
+          className: "api-method patch",
+        },
+        {
+          type: "doc",
+          id: "myapi/session-destroy",
+          label: "Delete User Training Session",
+          className: "api-method delete",
         },
       ],
     },

@@ -1,18 +1,22 @@
+from django.db import transaction
 from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework import status
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from core.serializer import (
     AllergySerializer,
     DiningSerializer,
     SessionScenarioSerializer,
     ProductSerializer,
+    SessionSerializer,
 )
-from core.models import DiningType, AllergyTag, Scenario, Product
+from core.models import DiningType, AllergyTag, Scenario, Product, Session
 
 TAG_DININGTYPE = ["DiningType"]
-TAG_SCENARIO = ["ScenarioTag"]
 TAG_ALLERGY = ["AllergyTag"]
 TAG_SESSION_SCENARIO = ["Scenario"]
 TAG_PRODUCT = ["Product"]
+TAG_SESSION = ["Session"]
 
 
 @extend_schema_view(
@@ -101,3 +105,60 @@ class SessionScenarioViewSet(viewsets.ModelViewSet):
 class ProductViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
+
+@extend_schema_view(
+    list=extend_schema(
+        summary="List User Training Session",
+        description="Returns list of all Session",
+        tags=TAG_SESSION,
+    ),
+    retrieve=extend_schema(
+        summary="Retrieve User Training Session",
+        description="Return Session of given id",
+        tags=TAG_SESSION,
+    ),
+    create=extend_schema(
+        summary="Create User Training Session",
+        description="Create a new Session",
+        tags=TAG_SESSION,
+    ),
+    update=extend_schema(
+        summary="Update User Training Session",
+        description="Replace an existing Session",
+        tags=TAG_SESSION,
+    ),
+    partial_update=extend_schema(
+        summary="Partially Update User Training Session",
+        description="Update specific fields of an Session",
+        tags=TAG_SESSION,
+    ),
+    destroy=extend_schema(
+        summary="Delete User Training Session",
+        description="Delete an Session",
+        tags=TAG_SESSION,
+    ),
+)
+class SessionViewSet(viewsets.ModelViewSet):
+    queryset = Session.objects.all()
+    serializer_class = SessionSerializer
+
+    def create(self, request, *args, **kwargs):
+        try:
+            with transaction.atomic():
+                allergies = request.data.get("allergy", [])
+                scenario_id = request.data.get("scenario_id")
+
+                session = Session.objects.create(
+                    user=request.user, scenario_id=scenario_id
+                )
+                allergy_ids = [allergy["id"] for allergy in allergies]
+
+                session.allergy.set(allergy_ids)
+
+                return Response(
+                    {"uuid": str(session.uuid)}, status=status.HTTP_201_CREATED
+                )
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

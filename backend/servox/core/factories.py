@@ -1,6 +1,8 @@
+import uuid
 import factory
 from django.utils import timezone
-from core.models import AllergyTag, DiningType, Scenario, Product
+from django.contrib.auth import get_user_model
+from core.models import AllergyTag, DiningType, Scenario, Product, Session
 
 
 class DiningTypeFactory(factory.django.DjangoModelFactory):
@@ -43,3 +45,33 @@ class ProductFactory(factory.django.DjangoModelFactory):
     dining_type = factory.SubFactory(DiningTypeFactory)
     allergy = factory.SubFactory(AllergyTagFactory)
     created_at = timezone.now()
+
+
+class UserFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = get_user_model()
+
+    username = factory.Sequence(lambda n: f"user{n}")
+    email = factory.LazyAttribute(lambda obj: f"{obj.username}@example.com")
+
+
+class SessionFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Session
+        skip_postgeneration_save = True
+
+    uuid = factory.LazyFunction(uuid.uuid4)
+    user = factory.SubFactory(UserFactory)
+    scenario = factory.SubFactory(ScenarioFactory)
+    metadata = factory.LazyFunction(dict)
+    status = Session.Status.ONGOING
+
+    @factory.post_generation
+    def allergy(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            self.allergy.add(*extracted)
+        else:
+            self.allergy.add(AllergyTagFactory(), AllergyTagFactory())

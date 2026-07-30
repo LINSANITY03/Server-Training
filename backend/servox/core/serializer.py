@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from core.models import DiningType, AllergyTag, Scenario, Product
+from core.models import DiningType, AllergyTag, Scenario, Product, Session
 
 
 class DiningSerializer(serializers.ModelSerializer):
@@ -37,3 +37,12 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         exclude = ["created_at"]
+
+
+class SessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Session
+        exclude = ["created_at", "user"]
+
+    def get_queryset(self):
+        return Session.objects.filter(user=self.request.user)
