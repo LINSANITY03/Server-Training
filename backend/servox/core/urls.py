@@ -2,18 +2,16 @@ from django.urls import path, include
 from rest_framework import routers
 
 from core.views import (
-    DiningViewSet,
     AllergyViewSet,
-    SessionScenarioViewSet,
-    ProductViewSet,
-    SessionViewSet,
+    GuestProfileViewSet,
+    ScenarioViewSet,
+    TrainingSessionViewSet,
 )
 
 router = routers.DefaultRouter()
-router.register(r"diningtype", DiningViewSet, basename="diningtype")
 router.register(r"allergytag", AllergyViewSet, basename="allergytag")
-router.register(r"sessionscenario", SessionScenarioViewSet, basename="sessionscenario")
-router.register(r"product", ProductViewSet, basename="product")
-router.register(r"session", SessionViewSet, basename="session")
+router.register(r"scenario", ScenarioViewSet, basename="scenario")
+router.register(r"session", TrainingSessionViewSet, basename="session")
+router.register(r"guestprofile", GuestProfileViewSet, basename="guestprofile")
 
 urlpatterns = [path("", include(router.urls))]

@@ -1,43 +1,117 @@
 "use client";
+
 import { createSession, getAllergy, getTrainingConfig } from "@/lib/training";
+
 import { Allergy, SessionScenario } from "@/types/training";
+
 import {
   AlertTriangle,
-  ChevronDown,
-  Info,
+  ChevronRight,
   MessageSquare,
   Mic,
   Play,
-  Users,
-  UtensilsCrossed,
+  Sparkles,
+  UserRound,
   Video,
 } from "lucide-react";
+
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 type SessionType = "text" | "audio" | "video";
 
+const personalities = [
+  {
+    id: "friendly",
+    label: "Friendly",
+    description: "Patient and cooperative",
+  },
+  {
+    id: "quiet",
+    label: "Quiet",
+    description: "Minimal conversation",
+  },
+  {
+    id: "talkative",
+    label: "Talkative",
+    description: "Likes detailed discussions",
+  },
+  {
+    id: "impatient",
+    label: "Impatient",
+    description: "Tests your service skills",
+  },
+  {
+    id: "formal",
+    label: "Formal",
+    description: "Professional interaction",
+  },
+];
+
+const knowledgeLevels = [
+  {
+    id: "low",
+    label: "Low",
+    description: "Needs explanations",
+  },
+  {
+    id: "medium",
+    label: "Medium",
+    description: "Normal guest knowledge",
+  },
+  {
+    id: "high",
+    label: "High",
+    description: "Experienced guest",
+  },
+];
+
+const occasions = [
+  {
+    id: "birthday",
+    label: "Birthday"
+  },
+  {
+    id: "anniversary",
+    label: "Anniversary"
+  }
+]
 export default function ChatSetupPage() {
   const router = useRouter();
+
   const [sessionType, setSessionType] = useState<SessionType>("text");
 
-  const [scenario, setScenario] = useState<SessionScenario[]>([]);
+  const [scenarios, setScenarios] = useState<SessionScenario[]>([]);
+
   const [selectedScenario, setSelectedScenario] =
     useState<SessionScenario | null>(null);
 
   const [allergies, setAllergies] = useState<Allergy[]>([]);
+
   const [selectedAllergies, setSelectedAllergies] = useState<Allergy[]>([]);
+
+  const [guestCount, setGuestCount] = useState(2);
+
+  const [personality, setPersonality] = useState("friendly");
+
+  const [knowledgeLevel, setKnowledgeLevel] = useState("low");
+
+  const [occasion, setOccasion] = useState("")
+
+  const [note, setNote] = useState("")
+
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    async function loadConfig() {
+    async function load() {
       try {
         setLoading(true);
 
         const config = await getTrainingConfig();
+
         const allergy = await getAllergy();
 
-        setScenario(config.results);
+        setScenarios(config.results);
         setAllergies(allergy.results);
       } catch (error) {
         console.error(error);
@@ -46,326 +120,397 @@ export default function ChatSetupPage() {
       }
     }
 
-    loadConfig();
+    load();
   }, []);
 
-  const toggleAllergy = (a: Allergy) => {
+  function toggleAllergy(allergy: Allergy) {
     setSelectedAllergies((prev) =>
-      prev.some((x) => x.id === a.id)
-        ? prev.filter((x) => x.id !== a.id)
-        : [...prev, a]
+      prev.some((x) => x.id === allergy.id)
+        ? prev.filter((x) => x.id !== allergy.id)
+        : [...prev, allergy]
     );
-  };
+  }
 
-  const handleStart = async () => {
-    if (!selectedScenario || !selectedAllergies) return;
+  async function handleStart() {
+    if (!selectedScenario) return;
 
     try {
       setLoading(true);
 
       const payload = {
-        scenario_id: selectedScenario.id,
-        allergy: selectedAllergies,
+        scenario: selectedScenario.id,
+
+        guest_profile: {
+          guest_count: guestCount,
+
+          personality: personality,
+
+          knowledge_level: knowledgeLevel,
+
+          notes: note,
+
+          allergies: selectedAllergies.map(allergy => allergy.id),
+        },
       };
 
       const response = await createSession(payload);
 
       if (response.uuid) {
-        alert("Scenario created");
         router.push(`/chat/session?id=${response.uuid}`);
       }
     } catch (error) {
       console.error(error);
-      alert("Failed to create scenario");
+
+      alert("Unable to start training session");
     } finally {
       setLoading(false);
     }
-  };
+  }
 
-  const sessionTypes = [
-    {
-      id: "text" as SessionType,
-      label: "Text Chat",
-      icon: MessageSquare,
-      available: true,
-      desc: "Type-based interaction",
-    },
-    {
-      id: "audio" as SessionType,
-      label: "Audio",
-      icon: Mic,
-      available: false,
-      desc: "Voice interaction",
-    },
-    {
-      id: "video" as SessionType,
-      label: "Video",
-      icon: Video,
-      available: false,
-      desc: "Full video simulation",
-    },
-  ];
-
-  const isReady = scenario;
+  const ready = selectedScenario !== null && !loading;
 
   return (
-    <div className="p-8 max-w-2xl animate-fade-in">
+    <div className="p-8 max-w-4xl animate-fade-in">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold" style={{ color: "#F0F5F0" }}>
+        <h1 className="text-3xl font-bold" style={{ color: "#F0F5F0" }}>
           New Training Session
         </h1>
-        <p className="text-sm mt-1" style={{ color: "#6B8F7A" }}>
-          Configure your scenario before starting
+
+        <p className="mt-2 text-sm" style={{ color: "#6B8F7A" }}>
+          Configure your simulation environment before meeting the guest.
         </p>
       </div>
 
       <div className="space-y-6">
-        {/* Session type */}
-        <div
+        {/* Session Type */}
+
+        <section
           className="p-6 rounded-2xl"
           style={{
             background: "#1A3A2A",
-            border: "1px solid rgba(45,122,79,0.2)",
+            border: "1px solid rgba(45,122,79,.2)",
           }}
         >
           <h3
-            className="text-sm font-semibold mb-4 flex items-center gap-2"
+            className="flex gap-2 items-center mb-4 font-semibold"
             style={{ color: "#A8E0C1" }}
           >
-            <MessageSquare className="w-4 h-4" /> Session Type
+            <MessageSquare className="w-4 h-4" />
+            Session Mode
           </h3>
-          <div className="grid grid-cols-3 gap-3">
-            {sessionTypes.map(({ id, label, icon: Icon, available, desc }) => (
-              <button
-                key={id}
-                onClick={() => available && setSessionType(id)}
-                disabled={!available}
-                className="relative p-4 rounded-xl text-left transition-all"
-                style={{
-                  background:
-                    sessionType === id
-                      ? "rgba(45,122,79,0.25)"
-                      : "rgba(45,122,79,0.05)",
-                  border:
-                    sessionType === id
-                      ? "1px solid #2D7A4F"
-                      : "1px solid rgba(45,122,79,0.15)",
-                  opacity: available ? 1 : 0.5,
-                  cursor: available ? "pointer" : "not-allowed",
-                }}
-              >
-                <Icon
-                  className="w-5 h-5 mb-2"
-                  style={{ color: sessionType === id ? "#4DB882" : "#6B8F7A" }}
-                />
-                <div
-                  className="text-sm font-medium"
-                  style={{ color: "#F0F5F0" }}
+
+          <div className="grid md:grid-cols-3 gap-3">
+            {[
+              {
+                id: "text",
+                label: "Text Chat",
+                icon: MessageSquare,
+                enabled: true,
+              },
+              {
+                id: "audio",
+                label: "Audio",
+                icon: Mic,
+                enabled: false,
+              },
+              {
+                id: "video",
+                label: "Video",
+                icon: Video,
+                enabled: false,
+              },
+            ].map((item) => {
+              const Icon = item.icon;
+
+              return (
+                <button
+                  key={item.id}
+                  disabled={!item.enabled}
+                  onClick={() =>
+                    item.enabled && setSessionType(item.id as SessionType)
+                  }
+                  className="p-4 rounded-xl text-left"
+                  style={{
+                    background:
+                      sessionType === item.id
+                        ? "rgba(45,122,79,.25)"
+                        : "rgba(45,122,79,.05)",
+
+                    border:
+                      sessionType === item.id
+                        ? "1px solid #2D7A4F"
+                        : "1px solid rgba(45,122,79,.2)",
+
+                    opacity: item.enabled ? 1 : 0.4,
+                  }}
                 >
-                  {label}
-                </div>
-                <div className="text-xs mt-0.5" style={{ color: "#6B8F7A" }}>
-                  {desc}
-                </div>
-                {!available && (
-                  <span
-                    className="absolute top-2 right-2 text-xs px-1.5 py-0.5 rounded-full"
-                    style={{
-                      background: "rgba(91,33,182,0.3)",
-                      color: "#A78BFA",
-                      fontSize: "9px",
-                    }}
+                  <Icon className="mb-2 w-5 h-5" style={{ color: "#4DB882" }} />
+
+                  <p
+                    className="text-sm font-medium"
+                    style={{ color: "#F0F5F0" }}
                   >
-                    SOON
-                  </span>
-                )}
-              </button>
-            ))}
+                    {item.label}
+                  </p>
+
+                  {!item.enabled && (
+                    <p className="text-xs mt-1" style={{ color: "#A78BFA" }}>
+                      Coming soon
+                    </p>
+                  )}
+                </button>
+              );
+            })}
           </div>
-        </div>
+        </section>
 
         {/* Scenario */}
-        <div
+
+        <section
           className="p-6 rounded-2xl"
           style={{
             background: "#1A3A2A",
-            border: "1px solid rgba(45,122,79,0.2)",
+            border: "1px solid rgba(45,122,79,.2)",
           }}
         >
-          <h3
-            className="text-sm font-semibold mb-4 flex items-center gap-2"
-            style={{ color: "#A8E0C1" }}
-          >
-            <UtensilsCrossed className="w-4 h-4" /> Scenario
+          <h3 className="font-semibold mb-4" style={{ color: "#A8E0C1" }}>
+            Choose Scenario
           </h3>
-          <div className="relative">
+
+          <div className="space-y-2">
+            <label
+              htmlFor="scenario"
+              className="block text-sm font-medium"
+              style={{ color: "#F0F5F0" }}
+            >
+              Scenario
+            </label>
+
             <select
+              id="scenario"
               value={selectedScenario?.id ?? ""}
               onChange={(e) => {
-                const selected = scenario.find(
-                  (s) => s.id === Number(e.target.value)
+                const scenario = scenarios.find(
+                  (s) => String(s.id) === e.target.value
                 );
-                setSelectedScenario(selected ?? null);
+                setSelectedScenario(scenario ?? null);
               }}
-              className="w-full px-4 py-3 rounded-xl text-sm appearance-none outline-none"
+              className="w-full p-3 rounded-xl"
               style={{
                 background: "#0D1F15",
-                border: "1px solid rgba(45,122,79,0.3)",
-                color: scenario ? "#F0F5F0" : "#6B8F7A",
+                color: "#F0F5F0",
+                border: "1px solid rgba(45,122,79,.2)",
               }}
             >
-              <option value="">Select a scenario...</option>
-              {scenario.map((s) => (
+              <option value="">Select a scenario</option>
+
+              {scenarios.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.name}
                 </option>
               ))}
             </select>
-            <ChevronDown
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
-              style={{ color: "#6B8F7A" }}
-            />
-          </div>
-        </div>
 
-        {/* Guest count + Dining type */}
-        <div className="grid grid-cols-2 gap-4">
-          <div
-            className="p-6 rounded-2xl"
-            style={{
-              background: "#1A3A2A",
-              border: "1px solid rgba(45,122,79,0.2)",
-            }}
-          >
-            <h3
-              className="text-sm font-semibold mb-4 flex items-center gap-2"
-              style={{ color: "#A8E0C1" }}
-            >
-              <Users className="w-4 h-4" /> Guests
-            </h3>
-            <div className="flex items-center gap-4">
-              <span
-                className="text-2xl font-bold w-10 text-center"
-                style={{ color: "#F0F5F0" }}
-              >
-                {selectedScenario?.guest_count}
-              </span>
-            </div>
+            {selectedScenario && (
+              <p className="text-xs" style={{ color: "#6B8F7A" }}>
+                {selectedScenario.description}
+              </p>
+            )}
           </div>
+        </section>
 
-          <div
-            className="p-6 rounded-2xl"
-            style={{
-              background: "#1A3A2A",
-              border: "1px solid rgba(45,122,79,0.2)",
-            }}
-          >
-            <h3
-              className="text-sm font-semibold mb-4 flex items-center gap-2"
-              style={{ color: "#A8E0C1" }}
-            >
-              <UtensilsCrossed className="w-4 h-4" /> Dining Type
-            </h3>
-            <div className="relative">
-              <input
-                value={selectedScenario?.dining_type.name || ""}
-                readOnly
-                className="w-full px-3 py-2.5 rounded-xl text-sm outline-none"
-                style={{
-                  background: "#0D1F15",
-                  border: "1px solid rgba(45,122,79,0.3)",
-                  color: selectedScenario?.dining_type ? "#F0F5F0" : "#6B8F7A",
-                }}
-              />
-            </div>
-          </div>
-        </div>
+        {/* Guest Profile */}
 
-        {/* Allergies */}
-        <div
+        <section
           className="p-6 rounded-2xl"
           style={{
             background: "#1A3A2A",
-            border: "1px solid rgba(45,122,79,0.2)",
+            border: "1px solid rgba(45,122,79,.2)",
           }}
         >
           <h3
-            className="text-sm font-semibold mb-1 flex items-center gap-2"
+            className="flex gap-2 items-center mb-5"
             style={{ color: "#A8E0C1" }}
           >
-            <AlertTriangle className="w-4 h-4" /> Dietary Restrictions &
+            <UserRound className="w-4 h-4" />
+            Guest Profile
+          </h3>
+
+          <div className="grid md:grid-cols-2 gap-5">
+            <div>
+              <label className="text-xs" style={{ color: "#6B8F7A" }}>
+                Number of Guests
+              </label>
+
+              <input
+                type="number"
+                min={1}
+                max={25}
+                value={guestCount}
+                onChange={(e) => setGuestCount(Number(e.target.value))}
+                className="w-full mt-2 p-3 rounded-xl"
+                style={{
+                  background: "#0D1F15",
+                  color: "#F0F5F0",
+                }}
+              />
+            </div>
+
+            <div>
+              <label className="text-xs" style={{ color: "#6B8F7A" }}>
+                Knowledge Level
+              </label>
+
+              <select
+                value={knowledgeLevel}
+                onChange={(e) => setKnowledgeLevel(e.target.value)}
+                className="w-full mt-2 p-3 rounded-xl"
+                style={{
+                  background: "#0D1F15",
+                  color: "#F0F5F0",
+                }}
+              >
+                {knowledgeLevels.map((x) => (
+                  <option key={x.id} value={x.id}>
+                    {x.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="mt-5">
+            <label className="text-xs" style={{ color: "#6B8F7A" }}>
+              Personality
+            </label>
+
+            <div className="grid md:grid-cols-3 gap-2 mt-2">
+              {personalities.map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => setPersonality(p.id)}
+                  className="p-3 rounded-xl text-left"
+                  style={{
+                    background:
+                      personality === p.id ? "rgba(45,122,79,.3)" : "#0D1F15",
+
+                    border:
+                      personality === p.id
+                        ? "1px solid #4DB882"
+                        : "1px solid transparent",
+                  }}
+                >
+                  <p className="text-sm" style={{ color: "#F0F5F0" }}>
+                    {p.label}
+                  </p>
+
+                  <p className="text-xs" style={{ color: "#6B8F7A" }}>
+                    {p.description}
+                  </p>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Occasion */}
+          <div className="mt-5">
+            <label className="text-xs" style={{ color: "#6B8F7A" }}>
+              Occasion
+            </label>
+
+            <select
+              value={occasion}
+              onChange={(e) => setOccasion(e.target.value)}
+              className="w-full mt-2 p-3 rounded-xl"
+              style={{
+                background: "#0D1F15",
+                color: "#F0F5F0",
+              }}
+            >
+              <option value="">Select occasion</option>
+              {occasions.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Notes */}
+          <div className="mt-5">
+            <label className="text-xs" style={{ color: "#6B8F7A" }}>
+              Notes
+            </label>
+
+            <textarea
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              rows={4}
+              placeholder="Add any extra details..."
+              className="w-full mt-2 p-3 rounded-xl resize-none"
+              style={{
+                background: "#0D1F15",
+                color: "#F0F5F0",
+              }}
+            />
+          </div>
+        </section>
+
+        {/* Allergies */}
+
+        <section
+          className="p-6 rounded-2xl"
+          style={{
+            background: "#1A3A2A",
+            border: "1px solid rgba(45,122,79,.2)",
+          }}
+        >
+          <h3 className="flex gap-2 mb-4" style={{ color: "#A8E0C1" }}>
+            <AlertTriangle className="w-4 h-4" />
             Allergies
           </h3>
-          <p className="text-xs mb-4" style={{ color: "#6B8F7A" }}>
-            Selected
-          </p>
+
           <div className="flex flex-wrap gap-2">
             {allergies.map((a) => {
-              const selected = selectedAllergies.includes(a);
+              const active = selectedAllergies.some((x) => x.id === a.id);
+
               return (
                 <button
                   key={a.id}
                   onClick={() => toggleAllergy(a)}
-                  className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
+                  className="px-3 py-2 rounded-full text-xs"
                   style={{
-                    background: selected
-                      ? "rgba(248,113,113,0.2)"
-                      : "rgba(45,122,79,0.1)",
-                    border: selected
-                      ? "1px solid rgba(248,113,113,0.5)"
-                      : "1px solid rgba(45,122,79,0.2)",
-                    color: selected ? "#F87171" : "#6B8F7A",
+                    background: active ? "rgba(248,113,113,.2)" : "#0D1F15",
+
+                    color: active ? "#F87171" : "#6B8F7A",
                   }}
                 >
-                  {selected ? "✓ " : ""}
+                  {active ? "✓ " : ""}
+
                   {a.name}
                 </button>
               );
             })}
           </div>
-          {selectedAllergies.length > 0 && (
-            <p className="text-xs mt-3" style={{ color: "#FBBF24" }}>
-              ⚠ {selectedAllergies.length} restriction
-              {selectedAllergies.length !== 1 ? "s" : ""} active — the AI will test your
-              handling
-            </p>
-          )}
-        </div>
+        </section>
 
-        {/* Info box */}
-        <div
-          className="flex gap-3 p-4 rounded-xl"
-          style={{
-            background: "rgba(91,33,182,0.1)",
-            border: "1px solid rgba(91,33,182,0.2)",
-          }}
-        >
-          <Info
-            className="w-4 h-4 shrink-0 mt-0.5"
-            style={{ color: "#A78BFA" }}
-          />
-          <p className="text-xs leading-relaxed" style={{ color: "#A78BFA" }}>
-            The AI will simulate realistic guest behaviour including complaints,
-            special requests, and unexpected events based on your scenario
-            setup.
-          </p>
-        </div>
+        {/* Start */}
 
-        {/* Start button */}
         <button
+          disabled={!ready}
           onClick={handleStart}
-          disabled={!isReady || loading}
-          className="w-full py-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all"
+          className="w-full py-4 rounded-xl flex justify-center items-center gap-2 font-bold"
           style={{
-            background: isReady
-              ? "linear-gradient(135deg, #2D7A4F, #38966A)"
-              : "rgba(45,122,79,0.2)",
-            color: isReady ? "#F0F5F0" : "#3A5A45",
-            cursor: isReady ? "pointer" : "not-allowed",
+            background: ready
+              ? "linear-gradient(135deg,#2D7A4F,#38966A)"
+              : "rgba(45,122,79,.2)",
+
+            color: "#F0F5F0",
           }}
         >
           <Play className="w-5 h-5" />
-          Start Training Session
+          Start Training
+          <ChevronRight className="w-4 h-4" />
         </button>
       </div>
     </div>

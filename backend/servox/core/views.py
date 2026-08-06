@@ -1,39 +1,20 @@
-from django.db import transaction
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from core.serializer import (
     AllergySerializer,
-    DiningSerializer,
-    SessionScenarioSerializer,
-    ProductSerializer,
-    SessionSerializer,
+    GuestProfileSerializer,
+    ScenarioSerializer,
+    TrainingSessionCreateSerializer,
+    TrainingSessionSerializer,
 )
-from core.models import DiningType, AllergyTag, Scenario, Product, Session
+from core.models import AllergyTag, GuestProfile, Scenario, TrainingSession
 
-TAG_DININGTYPE = ["DiningType"]
 TAG_ALLERGY = ["AllergyTag"]
 TAG_SESSION_SCENARIO = ["Scenario"]
-TAG_PRODUCT = ["Product"]
 TAG_SESSION = ["Session"]
-
-
-@extend_schema_view(
-    list=extend_schema(
-        summary="List Dining Types",
-        description="Returns list of all DiningTypes",
-        tags=TAG_DININGTYPE,
-    ),
-    retrieve=extend_schema(
-        summary="Retrieve Dining Type",
-        description="Return DiningTypes of given id",
-        tags=TAG_DININGTYPE,
-    ),
-)
-class DiningViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = DiningType.objects.all()
-    serializer_class = DiningSerializer
+TAG_GUEST_PROFILE = ["GuestProfile"]
 
 
 @extend_schema_view(
@@ -85,26 +66,9 @@ class AllergyViewSet(viewsets.ReadOnlyModelViewSet):
         tags=TAG_SESSION_SCENARIO,
     ),
 )
-class SessionScenarioViewSet(viewsets.ModelViewSet):
-    queryset = Scenario.objects.all()
-    serializer_class = SessionScenarioSerializer
-
-
-@extend_schema_view(
-    list=extend_schema(
-        summary="List Products",
-        description="Returns list of all Product",
-        tags=TAG_PRODUCT,
-    ),
-    retrieve=extend_schema(
-        summary="Retrieve Product",
-        description="Return Product of given id",
-        tags=TAG_PRODUCT,
-    ),
-)
-class ProductViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+class ScenarioViewSet(viewsets.ModelViewSet):
+    queryset = Scenario.objects.filter(is_active=True)
+    serializer_class = ScenarioSerializer
 
 
 @extend_schema_view(
@@ -139,26 +103,65 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
         tags=TAG_SESSION,
     ),
 )
-class SessionViewSet(viewsets.ModelViewSet):
-    queryset = Session.objects.all()
-    serializer_class = SessionSerializer
+class TrainingSessionViewSet(viewsets.ModelViewSet):
+
+    def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False):
+            return TrainingSession.objects.none()
+        return TrainingSession.objects.filter(user=self.request.user)
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return TrainingSessionCreateSerializer
+        return TrainingSessionSerializer
 
     def create(self, request, *args, **kwargs):
-        try:
-            with transaction.atomic():
-                allergies = request.data.get("allergy", [])
-                scenario_id = request.data.get("scenario_id")
+        serializer = self.get_serializer(data=request.data)
 
-                session = Session.objects.create(
-                    user=request.user, scenario_id=scenario_id
-                )
-                allergy_ids = [allergy["id"] for allergy in allergies]
+        if not serializer.is_valid():
+            print(serializer.errors)
+            return Response(serializer.errors, status=400)
 
-                session.allergy.set(allergy_ids)
+        session = serializer.save()
 
-                return Response(
-                    {"uuid": str(session.uuid)}, status=status.HTTP_201_CREATED
-                )
+        return Response(
+            {"uuid": str(session.uuid)},
+            status=status.HTTP_201_CREATED,
+        )
 
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+@extend_schema_view(
+    list=extend_schema(
+        summary="List Guest Profile",
+        description="Returns list of all Guest Profile",
+        tags=TAG_GUEST_PROFILE,
+    ),
+    retrieve=extend_schema(
+        summary="Retrieve Guest Profile",
+        description="Return Guest Profile of given id",
+        tags=TAG_GUEST_PROFILE,
+    ),
+    create=extend_schema(
+        summary="Create Guest Profile",
+        description="Create a new Guest Profile",
+        tags=TAG_GUEST_PROFILE,
+    ),
+    update=extend_schema(
+        summary="Update Guest Profile",
+        description="Replace an existing Guest Profile",
+        tags=TAG_GUEST_PROFILE,
+    ),
+    partial_update=extend_schema(
+        summary="Partially Update Guest Profile",
+        description="Update specific fields of an Guest Profile",
+        tags=TAG_GUEST_PROFILE,
+    ),
+    destroy=extend_schema(
+        summary="Delete Guest Profile",
+        description="Delete an Guest Profile",
+        tags=TAG_GUEST_PROFILE,
+    ),
+)
+class GuestProfileViewSet(viewsets.ModelViewSet):
+    queryset = GuestProfile.objects.all()
+    serializer_class = GuestProfileSerializer

@@ -1,9 +1,9 @@
 from django.contrib import admin
 
-from core.models import DiningType, AllergyTag, Scenario, Product, Session
+from core.models import AllergyTag, GuestProfile, Scenario, TrainingSession
 
 # Register your models here.
-admin.site.register(DiningType)
+# admin.site.register(DiningType)
 
 
 @admin.register(AllergyTag)
@@ -15,12 +15,12 @@ class AllergyTagAdmin(admin.ModelAdmin):
 
 @admin.register(Scenario)
 class ScenarioAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "description", "dining_type", "created_at")
+    list_display = ("id", "name", "description", "created_at")
 
 
-admin.site.register(Product)
-
-
-@admin.register(Session)
+@admin.register(TrainingSession)
 class SessionAdmin(admin.ModelAdmin):
-    list_display = ("id", "scenario", "created_at", "user")
+    list_display = ("id", "uuid", "user", "status", "started_at")
+
+
+admin.site.register(GuestProfile)

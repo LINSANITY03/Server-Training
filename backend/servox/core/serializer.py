@@ -1,12 +1,7 @@
+from django.db import transaction
 from rest_framework import serializers
 
-from core.models import DiningType, AllergyTag, Scenario, Product, Session
-
-
-class DiningSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DiningType
-        fields = ["name", "code"]
+from core.models import GuestProfile, Scenario, AllergyTag, TrainingSession
 
 
 class AllergySerializer(serializers.ModelSerializer):
@@ -15,34 +10,67 @@ class AllergySerializer(serializers.ModelSerializer):
         fields = ["name", "id"]
 
 
-class SessionScenarioSerializer(serializers.ModelSerializer):
-    dining_type = serializers.PrimaryKeyRelatedField(queryset=DiningType.objects.all())
-    allergy = serializers.PrimaryKeyRelatedField(queryset=AllergyTag.objects.all())
-
+class ScenarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Scenario
-        exclude = ["created_at"]
-
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-
-        data["dining_type"] = {"name": instance.dining_type.name}
-
-        data["allergy"] = {"name": instance.allergy.name}
-
-        return data
+        exclude = ["created_at", "updated_at"]
 
 
-class ProductSerializer(serializers.ModelSerializer):
+class GuestProfileSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Product
+        model = GuestProfile
         exclude = ["created_at"]
 
 
-class SessionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Session
-        exclude = ["created_at", "user"]
+class GuestProfileCreateSerializer(serializers.ModelSerializer):
+    allergies = serializers.PrimaryKeyRelatedField(
+        queryset=AllergyTag.objects.all(),
+        many=True,
+    )
 
-    def get_queryset(self):
-        return Session.objects.filter(user=self.request.user)
+    class Meta:
+        model = GuestProfile
+        fields = (
+            "guest_count",
+            "personality",
+            "knowledge_level",
+            "occasion",
+            "notes",
+            "allergies",
+        )
+
+
+class TrainingSessionCreateSerializer(serializers.ModelSerializer):
+    guest_profile = GuestProfileCreateSerializer(write_only=True)
+
+    class Meta:
+        model = TrainingSession
+        fields = (
+            "scenario",
+            "guest_profile",
+        )
+
+    @transaction.atomic
+    def create(self, validated_data):
+        guest_data = validated_data.pop("guest_profile")
+        allergies = guest_data.pop("allergies")
+
+        session = TrainingSession.objects.create(
+            user=self.context["request"].user,
+            **validated_data,
+        )
+
+        guest_profile = GuestProfile.objects.create(
+            session=session,
+            **guest_data,
+        )
+
+        guest_profile.allergies.set(allergies)
+
+        return session
+
+
+class TrainingSessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TrainingSession
+        exclude = ["started_at", "last_edited", "end_at"]

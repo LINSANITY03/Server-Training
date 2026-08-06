@@ -16,9 +16,7 @@ export const SessionScenarioSchema = z.object({
   id: z.number(),
   name: z.string(),
   description: z.string(),
-  guest_count: z.number(),
-  dining_type: z.object({ name: z.string() }),
-  allergy: z.object({ name: z.string() }),
+  is_active: z.boolean(),
 });
 
 export const TrainingConfigSchema = PaginatedSchema(SessionScenarioSchema);
@@ -37,13 +35,18 @@ export const AllergyConfigSchema = PaginatedSchema(AllergySchema);
 export type Allergy = z.infer<typeof AllergySchema>
 
 export const CreateSessionPayloadSchema = z.object({
-  scenario_id: z.number(),
-  allergy: z.array(AllergySchema),
+  scenario: z.number(),
+  guest_profile: z.object({
+    guest_count: z.number(),
+    personality: z.string(),
+    knowledge_level: z.string(),
+    allergies: z.array(z.number()),
+  })
 });
 
+export type CreateSession = z.infer<typeof CreateSessionPayloadSchema>;
 export const SessionSchema = z.object({
   uuid: z.string(),
 })
-export type CreateSession = z.infer<typeof CreateSessionPayloadSchema>;
 
 

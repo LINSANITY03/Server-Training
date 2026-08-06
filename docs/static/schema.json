@@ -26,6 +26,7 @@ paths:
       - AllergyTag
       security:
       - jwtAuth: []
+      - {}
       responses:
         '200':
           content:
@@ -49,6 +50,7 @@ paths:
       - AllergyTag
       security:
       - jwtAuth: []
+      - {}
       responses:
         '200':
           content:
@@ -56,11 +58,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/Allergy'
           description: ''
-  /api/diningtype/:
+  /api/guestprofile/:
     get:
-      operationId: diningtype_list
-      description: Returns list of all DiningTypes
-      summary: List Dining Types
+      operationId: guestprofile_list
+      description: Returns list of all Guest Profile
+      summary: List Guest Profile
       parameters:
       - name: limit
         required: false
@@ -75,44 +77,162 @@ paths:
         schema:
           type: integer
       tags:
-      - DiningType
+      - GuestProfile
       security:
       - jwtAuth: []
+      - {}
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedDiningList'
+                $ref: '#/components/schemas/PaginatedGuestProfileList'
           description: ''
-  /api/diningtype/{id}/:
+    post:
+      operationId: guestprofile_create
+      description: Create a new Guest Profile
+      summary: Create Guest Profile
+      tags:
+      - GuestProfile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GuestProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/GuestProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/GuestProfile'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GuestProfile'
+          description: ''
+  /api/guestprofile/{id}/:
     get:
-      operationId: diningtype_retrieve
-      description: Return DiningTypes of given id
-      summary: Retrieve Dining Type
+      operationId: guestprofile_retrieve
+      description: Return Guest Profile of given id
+      summary: Retrieve Guest Profile
       parameters:
       - in: path
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this dining type.
+        description: A unique integer value identifying this guest profile.
         required: true
       tags:
-      - DiningType
+      - GuestProfile
       security:
       - jwtAuth: []
+      - {}
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Dining'
+                $ref: '#/components/schemas/GuestProfile'
           description: ''
-  /api/product/:
+    put:
+      operationId: guestprofile_update
+      description: Replace an existing Guest Profile
+      summary: Update Guest Profile
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this guest profile.
+        required: true
+      tags:
+      - GuestProfile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GuestProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/GuestProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/GuestProfile'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GuestProfile'
+          description: ''
+    patch:
+      operationId: guestprofile_partial_update
+      description: Update specific fields of an Guest Profile
+      summary: Partially Update Guest Profile
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this guest profile.
+        required: true
+      tags:
+      - GuestProfile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGuestProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedGuestProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedGuestProfile'
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GuestProfile'
+          description: ''
+    delete:
+      operationId: guestprofile_destroy
+      description: Delete an Guest Profile
+      summary: Delete Guest Profile
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this guest profile.
+        required: true
+      tags:
+      - GuestProfile
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/scenario/:
     get:
-      operationId: product_list
-      description: Returns list of all Product
-      summary: List Products
+      operationId: scenario_list
+      description: Returns list of all Scenario
+      summary: List User Scenarios
       parameters:
       - name: limit
         required: false
@@ -127,39 +247,157 @@ paths:
         schema:
           type: integer
       tags:
-      - Product
+      - Scenario
       security:
       - jwtAuth: []
+      - {}
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedProductList'
+                $ref: '#/components/schemas/PaginatedScenarioList'
           description: ''
-  /api/product/{id}/:
+    post:
+      operationId: scenario_create
+      description: Create a new Scenario
+      summary: Create User Scenario
+      tags:
+      - Scenario
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Scenario'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Scenario'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Scenario'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scenario'
+          description: ''
+  /api/scenario/{id}/:
     get:
-      operationId: product_retrieve
-      description: Return Product of given id
-      summary: Retrieve Product
+      operationId: scenario_retrieve
+      description: Return Scenario of given id
+      summary: Retrieve User Scenario
       parameters:
       - in: path
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this product.
+        description: A unique integer value identifying this scenario.
         required: true
       tags:
-      - Product
+      - Scenario
       security:
       - jwtAuth: []
+      - {}
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Product'
+                $ref: '#/components/schemas/Scenario'
           description: ''
+    put:
+      operationId: scenario_update
+      description: Replace an existing Scenario
+      summary: Update User Scenario
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this scenario.
+        required: true
+      tags:
+      - Scenario
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Scenario'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Scenario'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Scenario'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scenario'
+          description: ''
+    patch:
+      operationId: scenario_partial_update
+      description: Update specific fields of an Scenario
+      summary: Partially Update User Scenario
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this scenario.
+        required: true
+      tags:
+      - Scenario
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedScenario'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedScenario'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedScenario'
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Scenario'
+          description: ''
+    delete:
+      operationId: scenario_destroy
+      description: Delete an Scenario
+      summary: Delete User Scenario
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this scenario.
+        required: true
+      tags:
+      - Scenario
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
   /api/session/:
     get:
       operationId: session_list
@@ -182,12 +420,13 @@ paths:
       - Session
       security:
       - jwtAuth: []
+      - {}
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedSessionList'
+                $ref: '#/components/schemas/PaginatedTrainingSessionList'
           description: ''
     post:
       operationId: session_create
@@ -199,22 +438,23 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Session'
+              $ref: '#/components/schemas/TrainingSessionCreate'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Session'
+              $ref: '#/components/schemas/TrainingSessionCreate'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Session'
+              $ref: '#/components/schemas/TrainingSessionCreate'
         required: true
       security:
       - jwtAuth: []
+      - {}
       responses:
         '201':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Session'
+                $ref: '#/components/schemas/TrainingSessionCreate'
           description: ''
   /api/session/{id}/:
     get:
@@ -226,18 +466,19 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this session.
+        description: A unique integer value identifying this training session.
         required: true
       tags:
       - Session
       security:
       - jwtAuth: []
+      - {}
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Session'
+                $ref: '#/components/schemas/TrainingSession'
           description: ''
     put:
       operationId: session_update
@@ -248,7 +489,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this session.
+        description: A unique integer value identifying this training session.
         required: true
       tags:
       - Session
@@ -256,22 +497,23 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Session'
+              $ref: '#/components/schemas/TrainingSession'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Session'
+              $ref: '#/components/schemas/TrainingSession'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Session'
+              $ref: '#/components/schemas/TrainingSession'
         required: true
       security:
       - jwtAuth: []
+      - {}
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Session'
+                $ref: '#/components/schemas/TrainingSession'
           description: ''
     patch:
       operationId: session_partial_update
@@ -282,7 +524,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this session.
+        description: A unique integer value identifying this training session.
         required: true
       tags:
       - Session
@@ -290,21 +532,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedSession'
+              $ref: '#/components/schemas/PatchedTrainingSession'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedSession'
+              $ref: '#/components/schemas/PatchedTrainingSession'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedSession'
+              $ref: '#/components/schemas/PatchedTrainingSession'
       security:
       - jwtAuth: []
+      - {}
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Session'
+                $ref: '#/components/schemas/TrainingSession'
           description: ''
     delete:
       operationId: session_destroy
@@ -315,176 +558,13 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this session.
+        description: A unique integer value identifying this training session.
         required: true
       tags:
       - Session
       security:
       - jwtAuth: []
-      responses:
-        '204':
-          description: No response body
-  /api/sessionscenario/:
-    get:
-      operationId: sessionscenario_list
-      description: Returns list of all Scenario
-      summary: List User Scenarios
-      parameters:
-      - name: limit
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: offset
-        required: false
-        in: query
-        description: The initial index from which to return the results.
-        schema:
-          type: integer
-      tags:
-      - Scenario
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedSessionScenarioList'
-          description: ''
-    post:
-      operationId: sessionscenario_create
-      description: Create a new Scenario
-      summary: Create User Scenario
-      tags:
-      - Scenario
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SessionScenario'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/SessionScenario'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/SessionScenario'
-        required: true
-      security:
-      - jwtAuth: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SessionScenario'
-          description: ''
-  /api/sessionscenario/{id}/:
-    get:
-      operationId: sessionscenario_retrieve
-      description: Return Scenario of given id
-      summary: Retrieve User Scenario
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this scenario.
-        required: true
-      tags:
-      - Scenario
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SessionScenario'
-          description: ''
-    put:
-      operationId: sessionscenario_update
-      description: Replace an existing Scenario
-      summary: Update User Scenario
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this scenario.
-        required: true
-      tags:
-      - Scenario
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SessionScenario'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/SessionScenario'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/SessionScenario'
-        required: true
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SessionScenario'
-          description: ''
-    patch:
-      operationId: sessionscenario_partial_update
-      description: Update specific fields of an Scenario
-      summary: Partially Update User Scenario
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this scenario.
-        required: true
-      tags:
-      - Scenario
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedSessionScenario'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedSessionScenario'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedSessionScenario'
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SessionScenario'
-          description: ''
-    delete:
-      operationId: sessionscenario_destroy
-      description: Delete an Scenario
-      summary: Delete User Scenario
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this scenario.
-        required: true
-      tags:
-      - Scenario
-      security:
-      - jwtAuth: []
+      - {}
       responses:
         '204':
           description: No response body
@@ -580,18 +660,74 @@ components:
       required:
       - id
       - name
-    Dining:
+    GuestProfile:
       type: object
       properties:
-        name:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        guest_count:
+          type: integer
+          maximum: 25
+          minimum: 0
+        occasion:
           type: string
           maxLength: 50
-        code:
+        personality:
+          $ref: '#/components/schemas/PersonalityEnum'
+        knowledge_level:
+          $ref: '#/components/schemas/KnowledgeLevelEnum'
+        notes:
           type: string
-          maxLength: 20
+        metadata: {}
+        session:
+          type: integer
+        allergies:
+          type: array
+          items:
+            type: integer
       required:
-      - code
-      - name
+      - guest_count
+      - id
+      - session
+      - uuid
+    GuestProfileCreate:
+      type: object
+      properties:
+        guest_count:
+          type: integer
+          maximum: 25
+          minimum: 0
+        personality:
+          $ref: '#/components/schemas/PersonalityEnum'
+        knowledge_level:
+          $ref: '#/components/schemas/KnowledgeLevelEnum'
+        occasion:
+          type: string
+          maxLength: 50
+        notes:
+          type: string
+        allergies:
+          type: array
+          items:
+            type: integer
+      required:
+      - allergies
+      - guest_count
+    KnowledgeLevelEnum:
+      enum:
+      - low
+      - medium
+      - high
+      type: string
+      description: |-
+        * `low` - Low
+        * `medium` - Medium
+        * `high` - High
     LoginRequest:
       type: object
       properties:
@@ -641,7 +777,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Allergy'
-    PaginatedDiningList:
+    PaginatedGuestProfileList:
       type: object
       required:
       - count
@@ -663,8 +799,8 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/Dining'
-    PaginatedProductList:
+            $ref: '#/components/schemas/GuestProfile'
+    PaginatedScenarioList:
       type: object
       required:
       - count
@@ -686,8 +822,8 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/Product'
-    PaginatedSessionList:
+            $ref: '#/components/schemas/Scenario'
+    PaginatedTrainingSessionList:
       type: object
       required:
       - count
@@ -709,31 +845,8 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/Session'
-    PaginatedSessionScenarioList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/SessionScenario'
-    PatchedSession:
+            $ref: '#/components/schemas/TrainingSession'
+    PatchedGuestProfile:
       type: object
       properties:
         id:
@@ -743,45 +856,27 @@ components:
           type: string
           format: uuid
           readOnly: true
-        end_at:
-          type: string
-          format: date-time
-          nullable: true
-        last_edited:
-          type: string
-          format: date-time
-          readOnly: true
-          nullable: true
-        metadata: {}
-        status:
-          $ref: '#/components/schemas/StatusEnum'
-        scenario:
+        guest_count:
           type: integer
-        allergy:
+          maximum: 25
+          minimum: 0
+        occasion:
+          type: string
+          maxLength: 50
+        personality:
+          $ref: '#/components/schemas/PersonalityEnum'
+        knowledge_level:
+          $ref: '#/components/schemas/KnowledgeLevelEnum'
+        notes:
+          type: string
+        metadata: {}
+        session:
+          type: integer
+        allergies:
           type: array
           items:
             type: integer
-    PatchedSessionScenario:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        dining_type:
-          type: integer
-        allergy:
-          type: integer
-        name:
-          type: string
-          maxLength: 50
-        description:
-          type: string
-          maxLength: 500
-        guest_count:
-          type: integer
-          maximum: 20
-          minimum: 0
-    Product:
+    PatchedScenario:
       type: object
       properties:
         id:
@@ -792,17 +887,9 @@ components:
           maxLength: 50
         description:
           type: string
-        dining_type:
-          type: integer
-        allergy:
-          type: integer
-      required:
-      - allergy
-      - description
-      - dining_type
-      - id
-      - name
-    Session:
+        is_active:
+          type: boolean
+    PatchedTrainingSession:
       type: object
       properties:
         id:
@@ -812,54 +899,48 @@ components:
           type: string
           format: uuid
           readOnly: true
-        end_at:
-          type: string
-          format: date-time
-          nullable: true
-        last_edited:
-          type: string
-          format: date-time
-          readOnly: true
-          nullable: true
-        metadata: {}
         status:
           $ref: '#/components/schemas/StatusEnum'
+        score:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+        metadata: {}
+        user:
+          type: integer
         scenario:
           type: integer
-        allergy:
-          type: array
-          items:
-            type: integer
-      required:
-      - id
-      - last_edited
-      - scenario
-      - uuid
-    SessionScenario:
+        current_step:
+          type: integer
+          nullable: true
+    PersonalityEnum:
+      enum:
+      - friendly
+      - quiet
+      - talkative
+      - impatient
+      - formal
+      type: string
+      description: |-
+        * `friendly` - Friendly
+        * `quiet` - Quiet
+        * `talkative` - Talkative
+        * `impatient` - Impatient
+        * `formal` - Formal
+    Scenario:
       type: object
       properties:
         id:
           type: integer
           readOnly: true
-        dining_type:
-          type: integer
-        allergy:
-          type: integer
         name:
           type: string
           maxLength: 50
         description:
           type: string
-          maxLength: 500
-        guest_count:
-          type: integer
-          maximum: 20
-          minimum: 0
+        is_active:
+          type: boolean
       required:
-      - allergy
-      - description
-      - dining_type
-      - guest_count
       - id
       - name
     StatusEnum:
@@ -890,6 +971,47 @@ components:
           writeOnly: true
       required:
       - token
+    TrainingSession:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+        score:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+        metadata: {}
+        user:
+          type: integer
+        scenario:
+          type: integer
+        current_step:
+          type: integer
+          nullable: true
+      required:
+      - id
+      - scenario
+      - user
+      - uuid
+    TrainingSessionCreate:
+      type: object
+      properties:
+        scenario:
+          type: integer
+        guest_profile:
+          allOf:
+          - $ref: '#/components/schemas/GuestProfileCreate'
+          writeOnly: true
+      required:
+      - guest_profile
+      - scenario
   securitySchemes:
     jwtAuth:
       type: http
