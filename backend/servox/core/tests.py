@@ -4,14 +4,12 @@ from django.urls import reverse
 from django.utils import timezone
 from rest_framework.test import APIClient
 from django.contrib.auth import get_user_model
-from core.factories import ProductFactory, ScenarioFactory, SessionFactory
-from core.models import DiningType, AllergyTag, Scenario, Product, Session
+from core.factories import AllergyTagFactory, ScenarioFactory, TrainingSessionFactory
+from core.models import AllergyTag, GuestProfile, Scenario, TrainingSession
 from core.serializer import (
-    DiningSerializer,
     AllergySerializer,
-    SessionScenarioSerializer,
-    ProductSerializer,
-    SessionSerializer,
+    ScenarioSerializer,
+    TrainingSessionSerializer,
 )
 
 User = get_user_model()
@@ -29,47 +27,6 @@ def authenticated_client(superuser):
     client = APIClient()
     client.force_authenticate(user=superuser)
     return client
-
-
-# DiningType
-
-
-@pytest.mark.django_db
-def test_list_diningtype(authenticated_client):
-    url = reverse("diningtype-list")
-    response = authenticated_client.get(url)
-
-    diningtypes = DiningType.objects.all()
-    expected_data = DiningSerializer(diningtypes, many=True).data
-
-    assert response.status_code == status.HTTP_200_OK
-    assert response.data["results"] == expected_data
-
-
-@pytest.mark.django_db
-def test_retrieve_diningtype(authenticated_client):
-    diningtype = DiningType.objects.create(
-        name="SET-MENU",
-        description="asd",
-        code="ST",
-        created_at=timezone.now(),
-    )
-
-    url = reverse("diningtype-detail", args=[diningtype.id])
-    response = authenticated_client.get(url)
-
-    expected_data = DiningSerializer(diningtype).data
-
-    assert response.status_code == status.HTTP_200_OK
-    assert response.data == expected_data
-
-
-@pytest.mark.django_db
-def test_retrieve_diningtype_not_found(authenticated_client):
-    url = reverse("diningtype-detail", args=[99999])
-    response = authenticated_client.get(url)
-
-    assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
 # Allergy
@@ -111,92 +68,83 @@ def test_retrieve_allergytag_not_found(authenticated_client):
 
 
 @pytest.mark.django_db
-def test_list_session_scenario(authenticated_client):
-    url = reverse("sessionscenario-list")
+def test_list_scenario(authenticated_client):
+    url = reverse("scenario-list")
     response = authenticated_client.get(url)
 
     scenario = Scenario.objects.all()
-    expected_data = SessionScenarioSerializer(scenario, many=True).data
+    expected_data = ScenarioSerializer(scenario, many=True).data
 
     assert response.status_code == status.HTTP_200_OK
     assert response.data["results"] == expected_data
 
 
 @pytest.mark.django_db
-def test_retrieve_session_scenario(authenticated_client):
+def test_retrieve_scenario(authenticated_client):
     factory_scenario = ScenarioFactory.create()
-    url = reverse("sessionscenario-detail", args=[factory_scenario.id])
+    url = reverse("scenario-detail", args=[factory_scenario.id])
     response = authenticated_client.get(url)
 
-    expected_data = SessionScenarioSerializer(factory_scenario).data
+    expected_data = ScenarioSerializer(factory_scenario).data
 
     assert response.status_code == status.HTTP_200_OK
     assert response.data == expected_data
 
 
 @pytest.mark.django_db
-def test_create_session_scenario(authenticated_client):
+def test_create_scenario(authenticated_client):
 
-    url = reverse("sessionscenario-list")
-    scenario_data = ScenarioFactory.create()
-    payload = {
-        "name": scenario_data.name,
-        "description": scenario_data.description,
-        "guest_count": scenario_data.guest_count,
-        "dining_type": scenario_data.dining_type.id,
-        "allergy": scenario_data.allergy.id,
-    }
-    response = authenticated_client.post(url, payload, format="json")
+    url = reverse("scenario-list")
+    scenario_data = ScenarioFactory.api_payload()
+    response = authenticated_client.post(url, scenario_data, format="json")
 
     assert response.status_code == status.HTTP_201_CREATED
 
     new_id = response.data.get("id")
     created = Scenario.objects.get(id=new_id)
-    expected_data = SessionScenarioSerializer(created).data
+    expected_data = ScenarioSerializer(created).data
     assert new_id == expected_data.get("id")
 
 
 @pytest.mark.django_db
-def test_update_session_scenario(authenticated_client):
+def test_update_scenario(authenticated_client):
 
     scenario_data = ScenarioFactory.create()
     payload = {
         "name": scenario_data.name,
         "description": "asdasd",
-        "guest_count": 15,
-        "dining_type": scenario_data.dining_type.id,
-        "allergy": scenario_data.allergy.id,
+        "is_active": True,
     }
-    url = reverse("sessionscenario-detail", args=[scenario_data.id])
+    url = reverse("scenario-detail", args=[scenario_data.id])
     response = authenticated_client.put(url, payload, format="json")
 
     assert response.status_code == status.HTTP_200_OK
     created = Scenario.objects.get(id=scenario_data.id)
-    expected_data = SessionScenarioSerializer(created).data
+    expected_data = ScenarioSerializer(created).data
     assert response.data == expected_data
 
 
 @pytest.mark.django_db
-def test_partial_update_session_scenario(authenticated_client):
+def test_partial_update_scenario(authenticated_client):
 
     scenario_data = ScenarioFactory.create()
     payload = {
-        "guest_count": 15,
+        "description": "asdasd",
     }
-    url = reverse("sessionscenario-detail", args=[scenario_data.id])
+    url = reverse("scenario-detail", args=[scenario_data.id])
     response = authenticated_client.patch(url, payload, format="json")
 
     assert response.status_code == status.HTTP_200_OK
     created = Scenario.objects.get(id=scenario_data.id)
-    expected_data = SessionScenarioSerializer(created).data
-    assert expected_data["guest_count"] == payload.get("guest_count")
+    expected_data = ScenarioSerializer(created).data
+    assert expected_data["description"] == payload.get("description")
 
 
 @pytest.mark.django_db
-def test_delete_session_scenario(authenticated_client):
+def test_delete_scenario(authenticated_client):
 
     scenario_data = ScenarioFactory.create()
-    url = reverse("sessionscenario-detail", args=[scenario_data.id])
+    url = reverse("scenario-detail", args=[scenario_data.id])
     response = authenticated_client.delete(url, format="json")
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
@@ -206,36 +154,36 @@ def test_delete_session_scenario(authenticated_client):
 # Product
 
 
-@pytest.mark.django_db
-def test_list_product(authenticated_client):
-    url = reverse("product-list")
-    response = authenticated_client.get(url)
+# @pytest.mark.django_db
+# def test_list_product(authenticated_client):
+#     url = reverse("product-list")
+#     response = authenticated_client.get(url)
 
-    product = Product.objects.all()
-    expected_data = ProductSerializer(product, many=True).data
+#     product = Product.objects.all()
+#     expected_data = ProductSerializer(product, many=True).data
 
-    assert response.status_code == status.HTTP_200_OK
-    assert response.data["results"] == expected_data
-
-
-@pytest.mark.django_db
-def test_retrieve_product(authenticated_client):
-    product_data = ProductFactory.create()
-    url = reverse("product-detail", args=[product_data.id])
-    response = authenticated_client.get(url)
-
-    expected_data = ProductSerializer(product_data).data
-
-    assert response.status_code == status.HTTP_200_OK
-    assert response.data == expected_data
+#     assert response.status_code == status.HTTP_200_OK
+#     assert response.data["results"] == expected_data
 
 
-@pytest.mark.django_db
-def test_retrieve_product_not_found(authenticated_client):
-    url = reverse("product-detail", args=[99999])
-    response = authenticated_client.get(url)
+# @pytest.mark.django_db
+# def test_retrieve_product(authenticated_client):
+#     product_data = ProductFactory.create()
+#     url = reverse("product-detail", args=[product_data.id])
+#     response = authenticated_client.get(url)
 
-    assert response.status_code == status.HTTP_404_NOT_FOUND
+#     expected_data = ProductSerializer(product_data).data
+
+#     assert response.status_code == status.HTTP_200_OK
+#     assert response.data == expected_data
+
+
+# @pytest.mark.django_db
+# def test_retrieve_product_not_found(authenticated_client):
+#     url = reverse("product-detail", args=[99999])
+#     response = authenticated_client.get(url)
+
+#     assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
 # Session
@@ -246,89 +194,106 @@ def test_list_session(authenticated_client):
     url = reverse("session-list")
     response = authenticated_client.get(url)
 
-    session = Session.objects.all()
-    expected_data = SessionSerializer(session, many=True).data
+    session = TrainingSession.objects.all()
+    expected_data = TrainingSessionSerializer(session, many=True).data
 
     assert response.status_code == status.HTTP_200_OK
     assert response.data["results"] == expected_data
 
 
 @pytest.mark.django_db
-def test_retrieve_session(authenticated_client):
+def test_retrieve_session(authenticated_client, superuser):
 
-    factory_session = SessionFactory.create()
+    factory_session = TrainingSessionFactory.create(user=superuser)
     url = reverse("session-detail", args=[factory_session.id])
     response = authenticated_client.get(url)
 
-    expected_data = SessionSerializer(factory_session).data
+    expected_data = TrainingSessionSerializer(factory_session).data
 
     assert response.status_code == status.HTTP_200_OK
     assert response.data == expected_data
 
 
 @pytest.mark.django_db
-def test_create_session(authenticated_client):
+def test_create_session(authenticated_client, superuser):
 
     url = reverse("session-list")
-    session_data = SessionFactory.create()
+    scenario = ScenarioFactory()
+    allergy = AllergyTagFactory()
     payload = {
-        "user": session_data.user.id,
-        "scenario_id": session_data.scenario.id,
-        "metadata": session_data.metadata,
-        "status": session_data.status,
-        "allergy": [{"id": allergy.id} for allergy in session_data.allergy.all()],
+        "scenario": scenario.id,
+        "guest_profile": {
+            "guest_count": 2,
+            "personality": GuestProfile.Personality.FORMAL,
+            "knowledge_level": GuestProfile.Knowledge.LOW,
+            "notes": "test guest",
+            "allergies": [allergy.id],
+        },
     }
     response = authenticated_client.post(url, payload, format="json")
 
     assert response.status_code == status.HTTP_201_CREATED
 
     new_id = response.data.get("uuid")
-    created = Session.objects.get(uuid=new_id)
-    expected_data = SessionSerializer(created).data
-    assert new_id == expected_data.get("uuid")
+    created_session = TrainingSession.objects.get(uuid=new_id)
+
+    assert created_session.user == superuser
+    assert created_session.scenario == scenario
+    assert created_session.status == TrainingSession.Status.ONGOING
+
+    guest_profile = created_session.guest_profile
+
+    assert guest_profile.guest_count == 2
+    assert guest_profile.personality == GuestProfile.Personality.FORMAL
+    assert guest_profile.knowledge_level == GuestProfile.Knowledge.LOW
+    assert guest_profile.notes == "test guest"
+
+    assert list(guest_profile.allergies.values_list("id", flat=True)) == [allergy.id]
 
 
 @pytest.mark.django_db
-def test_update_session(authenticated_client):
+def test_update_session(authenticated_client, superuser):
 
-    session_data = SessionFactory.create()
+    session_data = TrainingSessionFactory.create(user=superuser)
     payload = {
+        "user": superuser.id,
         "scenario": session_data.scenario.id,
         "metadata": {"name": "123"},
-        "status": Session.Status.COMPLETED,
-        "allergy": [allergy.id for allergy in session_data.allergy.all()],
+        "status": TrainingSession.Status.COMPLETED,
+        "score": 10,
+        "current_step": None,
     }
     url = reverse("session-detail", args=[session_data.id])
     response = authenticated_client.put(url, payload, format="json")
-
     assert response.status_code == status.HTTP_200_OK
-    created = Session.objects.get(uuid=session_data.uuid)
-    expected_data = SessionSerializer(created).data
+    session_data.refresh_from_db()
+    created = TrainingSession.objects.get(uuid=session_data.uuid)
+    expected_data = TrainingSessionSerializer(created).data
     assert response.data == expected_data
 
 
 @pytest.mark.django_db
-def test_partial_update_session(authenticated_client):
+def test_partial_update_session(authenticated_client, superuser):
 
-    session_data = SessionFactory.create()
+    session_data = TrainingSessionFactory.create(user=superuser)
     payload = {
-        "status": Session.Status.COMPLETED,
+        "status": TrainingSession.Status.COMPLETED,
     }
     url = reverse("session-detail", args=[session_data.id])
     response = authenticated_client.patch(url, payload, format="json")
 
     assert response.status_code == status.HTTP_200_OK
-    created = Session.objects.get(id=session_data.id)
-    expected_data = SessionSerializer(created).data
+    created = TrainingSession.objects.get(id=session_data.id)
+    expected_data = TrainingSessionSerializer(created).data
     assert expected_data["status"] == payload.get("status")
 
 
 @pytest.mark.django_db
-def test_delete_session(authenticated_client):
+def test_delete_session(authenticated_client, superuser):
 
-    session_data = SessionFactory.create()
+    session_data = TrainingSessionFactory.create(user=superuser)
     url = reverse("session-detail", args=[session_data.id])
     response = authenticated_client.delete(url, format="json")
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
-    assert not Session.objects.filter(id=session_data.id).exists()
+    assert not TrainingSession.objects.filter(id=session_data.id).exists()

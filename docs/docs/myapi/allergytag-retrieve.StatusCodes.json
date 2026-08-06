@@ -1,1 +1,1 @@
-{"responses":{"200":{"content":{"application/json":{"schema":{"type":"object","properties":{"name":{"type":"string","maxLength":50}},"required":["name"],"title":"Allergy"}}},"description":""}}}
+{"responses":{"200":{"content":{"application/json":{"schema":{"type":"object","properties":{"name":{"type":"string","maxLength":50},"id":{"type":"integer","readOnly":true}},"required":["id","name"],"title":"Allergy"}}},"description":""}}}

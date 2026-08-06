@@ -1,0 +1,1 @@
+{"responses":{"200":{"content":{"application/json":{"schema":{"type":"object","properties":{"id":{"type":"integer","readOnly":true},"name":{"type":"string","maxLength":50},"description":{"type":"string"},"is_active":{"type":"boolean"}},"required":["id","name"],"title":"Scenario"}}},"description":""}}}
