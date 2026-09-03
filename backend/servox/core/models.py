@@ -1,6 +1,7 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.auth.models import User
-from django.db import models
+from django.db import models, transaction
+from django.db.models import Max
 
 import uuid
 
@@ -234,6 +235,9 @@ class ConversationTurn(models.Model):
         blank=True,
         related_name="conversation_turns",
     )
+    in_reply_to = models.ForeignKey(
+        "self", on_delete=models.SET_NULL, null=True, blank=True, related_name="replies"
+    )
     token_usage = models.JSONField(
         default=dict,
         blank=True,
@@ -262,6 +266,43 @@ class ConversationTurn(models.Model):
 
     def __str__(self):
         return f"{self.id}-{self.created_at}"
+
+    @classmethod
+    @transaction.atomic
+    def create_user_message(cls, session, content):
+        session = TrainingSession.objects.select_for_update().get(pk=session.pk)
+        last_index = (
+            cls.objects.filter(session=session)
+            .aggregate(max_index=Max("message_index"))
+            .get("max_index")
+        )
+        next_index = 1 if last_index is None else last_index + 1
+        return cls.objects.create(
+            session=session,
+            message_index=next_index,
+            content=content,
+            role=ActorType.USER,
+            step=session.current_step,
+        )
+
+    @classmethod
+    @transaction.atomic
+    def create_assistant_message(cls, session, content, in_reply_to=None, step=None):
+        session = TrainingSession.objects.select_for_update().get(pk=session.pk)
+        last_index = (
+            cls.objects.filter(session=session)
+            .aggregate(max_index=Max("message_index"))
+            .get("max_index")
+        )
+        next_index = 1 if last_index is None else last_index + 1
+        return cls.objects.create(
+            session=session,
+            message_index=next_index,
+            content=content,
+            role=ActorType.AI,
+            step=step,
+            in_reply_to=in_reply_to,
+        )
 
 
 class EventLog(models.Model):

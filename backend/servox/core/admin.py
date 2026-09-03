@@ -1,6 +1,12 @@
 from django.contrib import admin
 
-from core.models import AllergyTag, GuestProfile, Scenario, TrainingSession
+from core.models import (
+    AllergyTag,
+    ConversationTurn,
+    GuestProfile,
+    Scenario,
+    TrainingSession,
+)
 
 # Register your models here.
 # admin.site.register(DiningType)
@@ -24,3 +30,16 @@ class SessionAdmin(admin.ModelAdmin):
 
 
 admin.site.register(GuestProfile)
+
+
+@admin.register(ConversationTurn)
+class ConversationAdmin(admin.ModelAdmin):
+    list_display = (
+        "uuid",
+        "session",
+        "message_index",
+        "role",
+        "provider",
+        "latency_ms",
+        "created_at",
+    )

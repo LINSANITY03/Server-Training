@@ -148,6 +148,30 @@ const sidebar: SidebarsConfig = {
           label: "Delete User Training Session",
           className: "api-method delete",
         },
+        {
+          type: "doc",
+          id: "myapi/session-stream-retrieve",
+          label: "Send Message",
+          className: "api-method get",
+        },
+      ],
+    },
+    {
+      type: "category",
+      label: "Conversation",
+      items: [
+        {
+          type: "doc",
+          id: "myapi/session-messages-list",
+          label: "Conversation History",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "myapi/session-messages-create",
+          label: "Send Message",
+          className: "api-method post",
+        },
       ],
     },
     {

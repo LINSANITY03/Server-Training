@@ -1,20 +1,16 @@
 "use client";
 
 import { createSession, getAllergy, getTrainingConfig } from "@/lib/training";
-
 import { Allergy, SessionScenario } from "@/types/training";
-
 import {
   AlertTriangle,
   ChevronRight,
   MessageSquare,
   Mic,
   Play,
-  Sparkles,
   UserRound,
   Video,
 } from "lucide-react";
-
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -78,28 +74,17 @@ const occasions = [
 ]
 export default function ChatSetupPage() {
   const router = useRouter();
-
   const [sessionType, setSessionType] = useState<SessionType>("text");
-
   const [scenarios, setScenarios] = useState<SessionScenario[]>([]);
-
   const [selectedScenario, setSelectedScenario] =
     useState<SessionScenario | null>(null);
-
   const [allergies, setAllergies] = useState<Allergy[]>([]);
-
   const [selectedAllergies, setSelectedAllergies] = useState<Allergy[]>([]);
-
   const [guestCount, setGuestCount] = useState(2);
-
   const [personality, setPersonality] = useState("friendly");
-
   const [knowledgeLevel, setKnowledgeLevel] = useState("low");
-
   const [occasion, setOccasion] = useState("")
-
   const [note, setNote] = useState("")
-
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -108,7 +93,6 @@ export default function ChatSetupPage() {
         setLoading(true);
 
         const config = await getTrainingConfig();
-
         const allergy = await getAllergy();
 
         setScenarios(config.results);
@@ -136,25 +120,18 @@ export default function ChatSetupPage() {
 
     try {
       setLoading(true);
-
       const payload = {
         scenario: selectedScenario.id,
-
         guest_profile: {
           guest_count: guestCount,
-
           personality: personality,
-
           knowledge_level: knowledgeLevel,
-
           notes: note,
-
           allergies: selectedAllergies.map(allergy => allergy.id),
         },
       };
 
       const response = await createSession(payload);
-
       if (response.uuid) {
         router.push(`/chat/session?id=${response.uuid}`);
       }

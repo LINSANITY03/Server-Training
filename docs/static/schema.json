@@ -26,7 +26,6 @@ paths:
       - AllergyTag
       security:
       - jwtAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -50,7 +49,6 @@ paths:
       - AllergyTag
       security:
       - jwtAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -80,7 +78,6 @@ paths:
       - GuestProfile
       security:
       - jwtAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -108,7 +105,6 @@ paths:
         required: true
       security:
       - jwtAuth: []
-      - {}
       responses:
         '201':
           content:
@@ -132,7 +128,6 @@ paths:
       - GuestProfile
       security:
       - jwtAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -167,7 +162,6 @@ paths:
         required: true
       security:
       - jwtAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -201,7 +195,6 @@ paths:
               $ref: '#/components/schemas/PatchedGuestProfile'
       security:
       - jwtAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -224,7 +217,6 @@ paths:
       - GuestProfile
       security:
       - jwtAuth: []
-      - {}
       responses:
         '204':
           description: No response body
@@ -250,7 +242,6 @@ paths:
       - Scenario
       security:
       - jwtAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -278,7 +269,6 @@ paths:
         required: true
       security:
       - jwtAuth: []
-      - {}
       responses:
         '201':
           content:
@@ -302,7 +292,6 @@ paths:
       - Scenario
       security:
       - jwtAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -337,7 +326,6 @@ paths:
         required: true
       security:
       - jwtAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -371,7 +359,6 @@ paths:
               $ref: '#/components/schemas/PatchedScenario'
       security:
       - jwtAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -394,7 +381,6 @@ paths:
       - Scenario
       security:
       - jwtAuth: []
-      - {}
       responses:
         '204':
           description: No response body
@@ -420,7 +406,6 @@ paths:
       - Session
       security:
       - jwtAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -448,7 +433,6 @@ paths:
         required: true
       security:
       - jwtAuth: []
-      - {}
       responses:
         '201':
           content:
@@ -456,23 +440,22 @@ paths:
               schema:
                 $ref: '#/components/schemas/TrainingSessionCreate'
           description: ''
-  /api/session/{id}/:
+  /api/session/{uuid}/:
     get:
       operationId: session_retrieve
       description: Return Session of given id
       summary: Retrieve User Training Session
       parameters:
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this training session.
+          type: string
+          format: uuid
         required: true
       tags:
       - Session
       security:
       - jwtAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -486,10 +469,10 @@ paths:
       summary: Update User Training Session
       parameters:
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this training session.
+          type: string
+          format: uuid
         required: true
       tags:
       - Session
@@ -504,10 +487,8 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/TrainingSession'
-        required: true
       security:
       - jwtAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -521,10 +502,10 @@ paths:
       summary: Partially Update User Training Session
       parameters:
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this training session.
+          type: string
+          format: uuid
         required: true
       tags:
       - Session
@@ -541,7 +522,6 @@ paths:
               $ref: '#/components/schemas/PatchedTrainingSession'
       security:
       - jwtAuth: []
-      - {}
       responses:
         '200':
           content:
@@ -555,19 +535,110 @@ paths:
       summary: Delete User Training Session
       parameters:
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this training session.
+          type: string
+          format: uuid
         required: true
       tags:
       - Session
       security:
       - jwtAuth: []
-      - {}
       responses:
         '204':
           description: No response body
+  /api/session/{uuid}/messages/:
+    get:
+      operationId: session_messages_list
+      description: Returns conversation history for this training session.
+      summary: Conversation History
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Conversation
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedConversationTurnList'
+          description: ''
+    post:
+      operationId: session_messages_create
+      description: Save a user message and trigger AI generation.
+      summary: Send Message
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Conversation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendMessage'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SendMessage'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SendMessage'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrainingSession'
+          description: ''
+  /api/session/{uuid}/stream/:
+    get:
+      operationId: session_stream_retrieve
+      description: Save a user message and trigger AI generation.
+      summary: Send Message
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Session
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/TrainingSession'
+          description: ''
   /api/token/:
     post:
       operationId: token_create
@@ -660,6 +731,25 @@ components:
       required:
       - id
       - name
+    ConversationTurn:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        content:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - content
+      - created_at
+      - uuid
     GuestProfile:
       type: object
       properties:
@@ -777,6 +867,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Allergy'
+    PaginatedConversationTurnList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConversationTurn'
     PaginatedGuestProfileList:
       type: object
       required:
@@ -900,18 +1013,24 @@ components:
           format: uuid
           readOnly: true
         status:
-          $ref: '#/components/schemas/StatusEnum'
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          readOnly: true
         score:
           type: string
           format: decimal
           pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          readOnly: true
         metadata: {}
         user:
           type: integer
+          readOnly: true
         scenario:
           type: integer
+          readOnly: true
         current_step:
           type: integer
+          readOnly: true
           nullable: true
     PersonalityEnum:
       enum:
@@ -927,6 +1046,16 @@ components:
         * `talkative` - Talkative
         * `impatient` - Impatient
         * `formal` - Formal
+    RoleEnum:
+      enum:
+      - AI
+      - User
+      - System
+      type: string
+      description: |-
+        * `AI` - AI
+        * `User` - User
+        * `System` - System
     Scenario:
       type: object
       properties:
@@ -943,6 +1072,14 @@ components:
       required:
       - id
       - name
+    SendMessage:
+      type: object
+      properties:
+        content:
+          type: string
+          maxLength: 5000
+      required:
+      - content
     StatusEnum:
       enum:
       - Ongoing
@@ -982,22 +1119,31 @@ components:
           format: uuid
           readOnly: true
         status:
-          $ref: '#/components/schemas/StatusEnum'
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          readOnly: true
         score:
           type: string
           format: decimal
           pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          readOnly: true
         metadata: {}
         user:
           type: integer
+          readOnly: true
         scenario:
           type: integer
+          readOnly: true
         current_step:
           type: integer
+          readOnly: true
           nullable: true
       required:
+      - current_step
       - id
       - scenario
+      - score
+      - status
       - user
       - uuid
     TrainingSessionCreate:

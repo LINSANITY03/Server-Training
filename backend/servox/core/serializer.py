@@ -1,7 +1,13 @@
 from django.db import transaction
 from rest_framework import serializers
 
-from core.models import GuestProfile, Scenario, AllergyTag, TrainingSession
+from core.models import (
+    ConversationTurn,
+    GuestProfile,
+    Scenario,
+    AllergyTag,
+    TrainingSession,
+)
 
 
 class AllergySerializer(serializers.ModelSerializer):
@@ -74,3 +80,34 @@ class TrainingSessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = TrainingSession
         exclude = ["started_at", "last_edited", "end_at"]
+        read_only_fields = [
+            "user",
+            "uuid",
+            "status",
+            "score",
+            "current_step",
+            "scenario",
+        ]
+
+
+class ConversationTurnSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConversationTurn
+        fields = (
+            "uuid",
+            "role",
+            "content",
+            "created_at",
+        )
+
+
+class SendMessageSerializer(serializers.Serializer):
+    content = serializers.CharField(
+        max_length=5000,
+        trim_whitespace=True,
+    )
+
+    def validate_content(self, value):
+        if not value.strip():
+            raise serializers.ValidationError("Message cannot be empty.")
+        return value

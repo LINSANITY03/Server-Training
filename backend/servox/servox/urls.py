@@ -28,6 +28,7 @@ from authentication.views import (
     CustomTokenRefreshView,
     CustomTokenVerifyView,
 )
+from core import health_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -46,4 +47,6 @@ urlpatterns = [
     path("api/token/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", CustomTokenRefreshView.as_view(), name="token_refresh"),
     path("api/token/verify/", CustomTokenVerifyView.as_view(), name="token_verify"),
+    # Health
+    path("healthz/status/", health_views.status_detail, name="health-status"),
 ]
