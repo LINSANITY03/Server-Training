@@ -1,4 +1,4 @@
-from datetime import timezone
+from django.utils import timezone
 from decimal import Decimal
 import json
 import logging

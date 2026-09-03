@@ -106,8 +106,3 @@ class SendMessageSerializer(serializers.Serializer):
         max_length=5000,
         trim_whitespace=True,
     )
-
-    def validate_content(self, value):
-        if not value.strip():
-            raise serializers.ValidationError("Message cannot be empty.")
-        return value
